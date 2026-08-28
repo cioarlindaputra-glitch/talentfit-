@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Award, Brain, CheckCircle, Clock, Download, Plus, 
   Printer, ShieldCheck, Sparkles, UserPlus, ArrowRight, Info, Briefcase,
-  Lock, KeyRound, LogOut, Eye, EyeOff, Calculator, Megaphone, Trash2, HeartHandshake, Search, FileDown
+  Lock, KeyRound, LogOut, Eye, EyeOff, Calculator, Megaphone, Trash2, HeartHandshake, Search, FileDown, MessageCircle, Database, Settings
 } from 'lucide-react';
 import {
   Chart as ChartJS,
@@ -216,7 +216,6 @@ const BASE_QUESTIONS = [
 // 2. BANK SOAL KHUSUS CREW OUTLET (PELAYANAN CS & BERHITUNG KASIR)
 // =========================================================================
 const CREW_OUTLET_QUESTIONS = [
-  // --- SUB-MODUL 3A: TES PELAYANAN CUSTOMER & HOSPITALITY (4 SOAL) ---
   {
     module: 'outlet_service',
     moduleTitle: 'Modul Khusus 3A: Pelayanan Pelanggan & Hospitality Outlet',
@@ -269,8 +268,6 @@ const CREW_OUTLET_QUESTIONS = [
       { key: 'D', text: 'Menolak pelanggan berikutnya karena dapur sudah terlalu sibuk.' }
     ]
   },
-
-  // --- SUB-MODUL 3B: TES BERHITUNG KASIR PRAKTIS (4 SOAL) ---
   {
     module: 'outlet_cashier',
     moduleTitle: 'Modul Khusus 3B: Tes Berhitung Cepat Kasir Outlet',
@@ -472,12 +469,19 @@ export default function Home() {
   const [db, setDb] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // HR Auth State
+  // HR & Cloud Config State
   const [isHrAuthenticated, setIsHrAuthenticated] = useState(false);
   const [hrPasswordInput, setHrPasswordInput] = useState('');
   const [loginError, setLoginError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [hrPinCode, setHrPinCode] = useState('admin123');
+  
+  // Cloud & WhatsApp Sync Config
+  const [hrWaNumber, setHrWaNumber] = useState('6281234567890');
+  const [supabaseUrl, setSupabaseUrl] = useState('');
+  const [supabaseKey, setSupabaseKey] = useState('');
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [isCloudLoading, setIsCloudLoading] = useState(false);
 
   // Posisi Resmi
   const [positionsList, setPositionsList] = useState([
@@ -509,27 +513,75 @@ export default function Home() {
   const [timeLeft, setTimeLeft] = useState(1200);
   const [activeReport, setActiveReport] = useState(null);
 
-  // PERSISTENT STORAGE: Load Database without Overwriting
+  // Load Saved Settings & Cloud Database
   useEffect(() => {
-    // 1. Load Database Pelamar Persisten
-    const savedDb = localStorage.getItem('talentmatrix_persistent_db');
-    const savedPos = localStorage.getItem('tm_custom_positions_v8');
     const savedPin = localStorage.getItem('tm_hr_pin');
+    const savedPos = localStorage.getItem('tm_custom_positions_v9');
+    const savedWa = localStorage.getItem('tm_hr_wa');
+    const savedUrl = localStorage.getItem('tm_supabase_url');
+    const savedKey = localStorage.getItem('tm_supabase_key');
     
     if (savedPin) setHrPinCode(savedPin);
+    if (savedWa) setHrWaNumber(savedWa);
+    if (savedUrl) setSupabaseUrl(savedUrl);
+    if (savedKey) setSupabaseKey(savedKey);
     if (savedPos) {
       try { setPositionsList(JSON.parse(savedPos)); } catch (e) {}
     }
 
-    if (savedDb) {
+    // Load Local/Cloud DB
+    fetchApplicants(savedUrl, savedKey);
+  }, []);
+
+  // Fetch dari Supabase jika ada, atau fallback ke LocalStorage
+  const fetchApplicants = async (sUrl, sKey) => {
+    const url = sUrl || supabaseUrl;
+    const key = sKey || supabaseKey;
+
+    if (url && key) {
       try {
-        const parsed = JSON.parse(savedDb);
-        if (Array.isArray(parsed)) {
-          setDb(parsed);
+        setIsCloudLoading(true);
+        const res = await fetch(`${url}/rest/v1/applicants?select=*&order=created_at.desc`, {
+          headers: {
+            'apikey': key,
+            'Authorization': `Bearer ${key}`
+          }
+        });
+        if (res.ok) {
+          const cloudData = await res.json();
+          // Transform dari format cloud
+          const formatted = cloudData.map(item => ({
+            id: item.token_id || item.id,
+            name: item.name,
+            email: item.email,
+            phone: item.phone,
+            position: item.position,
+            dept: item.dept,
+            roleType: item.role_type,
+            date: item.test_date,
+            disc: item.disc_summary,
+            mbti: item.mbti_summary,
+            outletScore: item.outlet_score,
+            marketing: item.marketing_score,
+            match: item.match_score,
+            status: item.recommendation_status
+          }));
+          setDb(formatted);
+          localStorage.setItem('talentmatrix_persistent_db', JSON.stringify(formatted));
+          setIsCloudLoading(false);
+          return;
         }
-      } catch (e) {}
+      } catch (err) {
+        console.warn('Cloud sync error, using local fallback:', err);
+      }
+      setIsCloudLoading(false);
+    }
+
+    // Fallback LocalStorage
+    const savedDb = localStorage.getItem('talentmatrix_persistent_db');
+    if (savedDb) {
+      try { setDb(JSON.parse(savedDb)); } catch (e) {}
     } else {
-      // Hanya inisialisasi jika benar-benar kosong pertama kali
       const initialSeed = [
         {
           id: 'APP-2026-CR01',
@@ -550,27 +602,12 @@ export default function Home() {
           },
           match: 97,
           status: 'STRONGLY RECOMMENDED'
-        },
-        {
-          id: 'APP-2026-DM01',
-          name: 'Yohanes Oktaviano Fernandez',
-          email: 'yohanes.fernandez@email.com',
-          phone: '081234567890',
-          position: 'Digital Marketing & Content Specialist',
-          dept: 'Growth & Marketing',
-          roleType: 'digital_marketing',
-          date: '28 Ags 2026',
-          disc: { d: 82, i: 90, s: 45, c: 68, dom: 'I-D (Creative Promoter)' },
-          mbti: { type: 'ENTP', title: 'The Visionary / Campaigner', desc: 'Sangat kreatif, berani bereksperimen dengan konten viral, dan tajam merumuskan hook iklan.' },
-          marketing: { score: 100, correct: 8, total: 8, cat: 'Expert (Creative & Analytical)' },
-          match: 96,
-          status: 'STRONGLY RECOMMENDED'
         }
       ];
       setDb(initialSeed);
       localStorage.setItem('talentmatrix_persistent_db', JSON.stringify(initialSeed));
     }
-  }, []);
+  };
 
   // Timer Effect
   useEffect(() => {
@@ -590,7 +627,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [view, timeLeft]);
 
-  // HR Auth
+  // HR Auth Handlers
   const handleHrLogin = (e) => {
     e.preventDefault();
     if (hrPasswordInput === hrPinCode) {
@@ -598,6 +635,7 @@ export default function Home() {
       setLoginError('');
       setHrPasswordInput('');
       setView('hr-dashboard');
+      fetchApplicants();
     } else {
       setLoginError('Password / PIN HRD salah! Silakan coba lagi.');
     }
@@ -620,12 +658,25 @@ export default function Home() {
   };
 
   const navigateToHrPortal = () => {
-    if (isHrAuthenticated) setView('hr-dashboard');
-    else {
+    if (isHrAuthenticated) {
+      setView('hr-dashboard');
+      fetchApplicants();
+    } else {
       setLoginError('');
       setHrPasswordInput('');
       setView('hr-login');
     }
+  };
+
+  // Simpan Pengaturan Cloud & WA
+  const handleSaveSettings = (e) => {
+    e.preventDefault();
+    localStorage.setItem('tm_hr_wa', hrWaNumber);
+    localStorage.setItem('tm_supabase_url', supabaseUrl);
+    localStorage.setItem('tm_supabase_key', supabaseKey);
+    setShowSettingsModal(false);
+    alert('Pengaturan Database Cloud & Nomor WA HRD berhasil disimpan!');
+    fetchApplicants(supabaseUrl, supabaseKey);
   };
 
   // Tambah & Hapus Posisi (HR)
@@ -638,7 +689,7 @@ export default function Home() {
     };
     const updated = [...positionsList, newPos];
     setPositionsList(updated);
-    localStorage.setItem('tm_custom_positions_v8', JSON.stringify(updated));
+    localStorage.setItem('tm_custom_positions_v9', JSON.stringify(updated));
     setNewPosTitle('');
     setNewPosDept('');
     setShowAddPosModal(false);
@@ -653,13 +704,23 @@ export default function Home() {
     if (confirm(`Hapus posisi "${positionsList[idxToDelete].title}" dari daftar lowongan?`)) {
       const updated = positionsList.filter((_, idx) => idx !== idxToDelete);
       setPositionsList(updated);
-      localStorage.setItem('tm_custom_positions_v8', JSON.stringify(updated));
+      localStorage.setItem('tm_custom_positions_v9', JSON.stringify(updated));
     }
   };
 
-  // Hapus Data Pelamar Tunggal oleh HR
-  const handleDeleteApplicant = (applicantId, applicantName) => {
+  const handleDeleteApplicant = async (applicantId, applicantName) => {
     if (confirm(`Hapus data pelamar "${applicantName}" dari database?`)) {
+      if (supabaseUrl && supabaseKey) {
+        try {
+          await fetch(`${supabaseUrl}/rest/v1/applicants?token_id=eq.${applicantId}`, {
+            method: 'DELETE',
+            headers: {
+              'apikey': supabaseKey,
+              'Authorization': `Bearer ${supabaseKey}`
+            }
+          });
+        } catch (e) {}
+      }
       const currentStored = JSON.parse(localStorage.getItem('talentmatrix_persistent_db') || '[]');
       const updated = currentStored.filter(item => item.id !== applicantId);
       setDb(updated);
@@ -667,12 +728,11 @@ export default function Home() {
     }
   };
 
-  // Ekspor Seluruh Database Pelamar ke File JSON Backup
   const handleExportBackup = () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `Backup_Data_Pelamar_${new Date().toISOString().slice(0, 10)}.json`);
+    downloadAnchor.setAttribute("download", `Backup_Pelamar_${new Date().toISOString().slice(0, 10)}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -708,8 +768,8 @@ export default function Home() {
     setView('test-runner');
   };
 
-  // Kalkulasi Skor & SIMPAN PERSISTEN (APPEND KE DATABASE LAMA)
-  const calculateResults = () => {
+  // Kalkulasi Skor & Sinkronisasi Cloud + LocalStorage
+  const calculateResults = async () => {
     // 1. DISC Scoring
     let d = 40, i = 35, s = 30, c = 45;
     Object.keys(answers).forEach(k => {
@@ -837,14 +897,47 @@ export default function Home() {
       status: match >= 85 ? 'STRONGLY RECOMMENDED' : (match >= 70 ? 'RECOMMENDED' : 'CONSIDER')
     };
 
-    // BACA DATABASE LOKAL YANG SUDAH ADA, LALU GABUNGKAN (TIDAK PERNAH MENIMPA)
+    // 1. Simpan ke Cloud Supabase (Jika sudah dikonfigurasi)
+    const sUrl = localStorage.getItem('tm_supabase_url') || supabaseUrl;
+    const sKey = localStorage.getItem('tm_supabase_key') || supabaseKey;
+    if (sUrl && sKey) {
+      try {
+        await fetch(`${sUrl}/rest/v1/applicants`, {
+          method: 'POST',
+          headers: {
+            'apikey': sKey,
+            'Authorization': `Bearer ${sKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            token_id: resultObj.id,
+            name: resultObj.name,
+            email: resultObj.email,
+            phone: resultObj.phone,
+            position: resultObj.position,
+            dept: resultObj.dept,
+            role_type: resultObj.roleType,
+            test_date: resultObj.date,
+            disc_summary: resultObj.disc,
+            mbti_summary: resultObj.mbti,
+            outlet_score: resultObj.outletScore,
+            marketing_score: resultObj.marketing,
+            match_score: resultObj.match,
+            recommendation_status: resultObj.status
+          })
+        });
+      } catch (err) {
+        console.warn('Gagal sync ke cloud:', err);
+      }
+    }
+
+    // 2. Simpan ke LocalStorage Persisten
     const existingRaw = localStorage.getItem('talentmatrix_persistent_db');
     let existingList = [];
     if (existingRaw) {
       try { existingList = JSON.parse(existingRaw); } catch (e) {}
     }
-    
-    // Taruh data pelamar baru di urutan paling atas
     const updatedList = [resultObj, ...existingList];
     setDb(updatedList);
     localStorage.setItem('talentmatrix_persistent_db', JSON.stringify(updatedList));
@@ -877,6 +970,36 @@ export default function Home() {
     }
   };
 
+  // Kirim Hasil Otomatis via WhatsApp ke HR
+  const sendResultToWhatsApp = () => {
+    if (!activeReport) return;
+    const wa = hrWaNumber.replace(/[^0-9]/g, '');
+    let specificInfo = '';
+
+    if (activeReport.roleType === 'crew_outlet' && activeReport.outletScore) {
+      specificInfo = `*Hospitality CS:* ${activeReport.outletScore.serviceScore}% (${activeReport.outletScore.serviceCat})\n*Ketelitian Kasir:* ${activeReport.outletScore.cashierScore}% (${activeReport.outletScore.cashierCat})`;
+    } else if (activeReport.roleType === 'digital_marketing' && activeReport.marketing) {
+      specificInfo = `*Skor Digital Marketing:* ${activeReport.marketing.score}% (${activeReport.marketing.cat})`;
+    } else {
+      specificInfo = `*Status Tes:* Selesai Lengkap`;
+    }
+
+    const text = `Halo Tim HRD, saya telah menyelesaikan Tes Asesmen Online:\n\n` +
+      `*Nama Pelamar:* ${activeReport.name}\n` +
+      `*ID Token:* ${activeReport.id}\n` +
+      `*Posisi Dilamar:* ${activeReport.position}\n` +
+      `*No. WA:* ${activeReport.phone}\n` +
+      `*Tipe MBTI:* ${activeReport.mbti.type} (${activeReport.mbti.title})\n` +
+      `*DISC Dominan:* ${activeReport.disc.dom}\n` +
+      `${specificInfo}\n\n` +
+      `*Hasil Akhir:* ${activeReport.status} (Fit Index: ${activeReport.match}%)\n` +
+      `*Tanggal:* ${activeReport.date}\n\n` +
+      `Mohon verifikasi dan arahan untuk tahapan interview selanjutnya. Terima kasih!`;
+
+    const waUrl = `https://api.whatsapp.com/send?phone=${wa}&text=${encodeURIComponent(text)}`;
+    window.open(waUrl, '_blank');
+  };
+
   const q = activeQuestions[qIndex];
 
   // Filter List Pelamar di Dashboard HR
@@ -901,7 +1024,7 @@ export default function Home() {
             </div>
             <div>
               <span className="font-extrabold text-base tracking-tight bg-gradient-to-r from-white via-slate-100 to-sky-400 bg-clip-text text-transparent">TalentMatrix AI</span>
-              <span className="text-[10px] ml-2 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">Persistent DB</span>
+              <span className="text-[10px] ml-2 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">Cloud & WA Sync</span>
             </div>
           </div>
 
@@ -1210,18 +1333,26 @@ export default function Home() {
           </div>
         )}
 
-        {/* 4. LAPORAN HASIL ASESMEN INDIVIDU & PDF EXPORT */}
+        {/* 4. LAPORAN HASIL ASESMEN INDIVIDU & ACTION BAR */}
         {view === 'report' && activeReport && (
           <div className="space-y-6">
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-center no-print">
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3 no-print">
               <div className="flex items-center space-x-2">
                 <CheckCircle className="w-5 h-5 text-emerald-600" />
-                <span className="text-xs font-extrabold text-slate-800">Laporan Asesmen Disimpan Persisten</span>
+                <span className="text-xs font-extrabold text-slate-800">Laporan Asesmen Telah Terbit & Tersimpan</span>
               </div>
               <div className="flex items-center space-x-2">
-                <button onClick={downloadPdf} className="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center space-x-2 shadow">
+                {/* Tombol Kirim Otomatis ke WhatsApp HRD */}
+                <button 
+                  onClick={sendResultToWhatsApp} 
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-md transition"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>Kirim Hasil ke HRD (WhatsApp)</span>
+                </button>
+                <button onClick={downloadPdf} className="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow">
                   <Download className="w-4 h-4" />
-                  <span>Download PDF Resmi</span>
+                  <span>Download PDF</span>
                 </button>
                 <button onClick={() => window.print()} className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center space-x-1">
                   <Printer className="w-4 h-4" />
@@ -1370,11 +1501,22 @@ export default function Home() {
                 <div>
                   <div className="flex items-center space-x-2">
                     <h2 className="text-xl font-black text-slate-900">Portal Manajemen & Rekap HRD</h2>
-                    <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">Database Tersimpan Permanen</span>
+                    {supabaseUrl ? (
+                      <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold flex items-center space-x-1">
+                        <Database className="w-3 h-3 text-emerald-600" />
+                        <span>Cloud Database Aktif</span>
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[10px] font-bold">LocalStorage Mode</span>
+                    )}
                   </div>
-                  <p className="text-xs text-slate-500">Seluruh data pelamar tersimpan secara persisten dan tidak akan hilang saat ada tes baru.</p>
+                  <p className="text-xs text-slate-500">Seluruh data pelamar tersimpan permanen dan terupdate secara realtime.</p>
                 </div>
                 <div className="flex items-center space-x-2">
+                  <button onClick={() => setShowSettingsModal(true)} title="Atur Cloud DB & No. WA" className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200 flex items-center space-x-1">
+                    <Settings className="w-3.5 h-3.5" />
+                    <span>Setup Cloud & WA</span>
+                  </button>
                   <button onClick={handleExportBackup} title="Unduh file backup JSON" className="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl text-xs font-bold border border-emerald-200 flex items-center space-x-1">
                     <FileDown className="w-3.5 h-3.5" />
                     <span>Backup Data</span>
@@ -1530,6 +1672,77 @@ export default function Home() {
               </div>
 
             </div>
+
+            {/* Modal Setup Database Cloud & WhatsApp HR */}
+            {showSettingsModal && (
+              <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-200">
+                  <div className="flex items-center space-x-2.5 pb-3 border-b border-slate-100">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                      <Settings className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900 text-sm">Setup Sinkronisasi Cloud & WhatsApp HRD</h3>
+                      <p className="text-[11px] text-slate-400">Agar data dari HP pelamar langsung masuk ke laptop HRD secara realtime.</p>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleSaveSettings} className="space-y-3.5 text-xs">
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Nomor WhatsApp HRD (Gunakan kode 62) *</label>
+                      <input 
+                        type="text" 
+                        required 
+                        placeholder="Contoh: 6281234567890" 
+                        value={hrWaNumber} 
+                        onChange={e => setHrWaNumber(e.target.value)} 
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                      <p className="text-[10px] text-slate-400 mt-1">Pelamar dapat mengirimkan rangkuman hasil tes langsung ke nomor ini.</p>
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-100">
+                      <label className="block font-bold text-slate-700 mb-1">Supabase Project URL (Opsional untuk Cloud Sync)</label>
+                      <input 
+                        type="text" 
+                        placeholder="https://xyzcompany.supabase.co" 
+                        value={supabaseUrl} 
+                        onChange={e => setSupabaseUrl(e.target.value)} 
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Supabase Anon Public API Key (Opsional)</label>
+                      <input 
+                        type="password" 
+                        placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." 
+                        value={supabaseKey} 
+                        onChange={e => setSupabaseKey(e.target.value)} 
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                      <p className="text-[10px] text-slate-400 mt-1">Dapatkan URL & Anon Key gratis di dashboard Supabase (Project Settings → API).</p>
+                    </div>
+
+                    <div className="flex justify-end space-x-2 pt-3">
+                      <button 
+                        type="button" 
+                        onClick={() => setShowSettingsModal(false)} 
+                        className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100"
+                      >
+                        Tutup
+                      </button>
+                      <button 
+                        type="submit" 
+                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow"
+                      >
+                        Simpan Pengaturan
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
 
             {/* Modal Tambah Posisi */}
             {showAddPosModal && (
