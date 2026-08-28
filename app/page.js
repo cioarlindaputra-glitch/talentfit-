@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Award, Brain, CheckCircle, Clock, Download, FileSpreadsheet, 
-  LayoutDashboard, Plus, Printer, RotateCcw, ShieldCheck, Sparkles, 
-  Trash2, TrendingUp, UserPlus, Users, ArrowLeft, ArrowRight, Info 
+  Award, Brain, CheckCircle, Clock, Download, Plus, 
+  Printer, ShieldCheck, Sparkles, UserPlus, ArrowRight, Info, Briefcase,
+  Lock, KeyRound, LogOut, Eye, EyeOff
 } from 'lucide-react';
 import {
   Chart as ChartJS,
@@ -19,33 +19,85 @@ import { Radar } from 'react-chartjs-2';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
+// =========================================================================
+// BANK SOAL LENGKAP & BERAKURASI TINGGI (EXPANDED PSYCHOMETRIC & COGNITIVE)
+// =========================================================================
 const QUESTIONS = [
-  // DISC
+  // --- MODUL 1: DISC (6 SOAL FORCED-CHOICE) ---
   {
     module: 'disc',
     moduleTitle: 'Modul 1: Profil Gaya Kerja (DISC)',
     moduleBadge: 'Modul 1 / 3 (DISC)',
-    instruction: 'Pilih 1 opsi yang PALING menggambarkan diri Anda (Most) dan 1 yang PALING TIDAK menggambarkan (Least):',
+    instruction: 'Pilih 1 opsi yang PALING sesuai (Most) dan 1 opsi yang PALING TIDAK sesuai (Least) dengan karakter Anda saat bekerja:',
     options: [
-      { key: 'D', text: 'Tegas, cepat mengambil keputusan, berani mengambil risiko demi hasil tinggi.' },
-      { key: 'I', text: 'Antusias, supel, pandai memotivasi tim dan senang berinteraksi aktif.' },
-      { key: 'S', text: 'Tenang, sabar, dapat diandalkan, dan menyukai keteraturan yang konsisten.' },
-      { key: 'C', text: 'Teliti, analitis, sistematis, dan mengutamakan ketepatan standar data.' }
+      { key: 'D', text: 'Tegas, cepat mengambil keputusan, dan berani menantang risiko demi hasil tinggi.' },
+      { key: 'I', text: 'Antusias, ramah, persuasif, dan senang menginspirasi serta memotivasi tim.' },
+      { key: 'S', text: 'Tenang, sabar, dapat diandalkan, setia kawan, dan menyukai stabilitas.' },
+      { key: 'C', text: 'Teliti, analitis, taat prosedur, dan mengutamakan akurasi standar data.' }
     ]
   },
   {
     module: 'disc',
     moduleTitle: 'Modul 1: Profil Gaya Kerja (DISC)',
     moduleBadge: 'Modul 1 / 3 (DISC)',
-    instruction: 'Saat menghadapi deadline ketat, kecenderungan respon alami Anda:',
+    instruction: 'Saat menghadapi deadline proyek yang sangat ketat, respon alami Anda:',
     options: [
-      { key: 'D', text: 'Mengambil kendali alur kerja, memangkas proses berbelit, langsung eksekusi.' },
-      { key: 'I', text: 'Membangun optimisme rekan tim agar tidak stres dan memicu ide-ide segar.' },
-      { key: 'S', text: 'Bekerja dengan ritme stabil dan konsisten membantu rekan tim.' },
-      { key: 'C', text: 'Memverifikasi ulang seluruh data dan checklist agar nol toleransi kesalahan.' }
+      { key: 'D', text: 'Mengambil alih komando, memangkas proses birokrasi, langsung eksekusi target.' },
+      { key: 'I', text: 'Membangun semangat tim agar tidak panik dan berdiskusi mencari ide kreatif bersama.' },
+      { key: 'S', text: 'Bekerja dengan ritme stabil, memastikan seluruh rekan tim tetap sinkron.' },
+      { key: 'C', text: 'Memverifikasi ulang seluruh checklist dan SOP agar tidak terjadi celah kesalahan fatal.' }
     ]
   },
-  // MBTI
+  {
+    module: 'disc',
+    moduleTitle: 'Modul 1: Profil Gaya Kerja (DISC)',
+    moduleBadge: 'Modul 1 / 3 (DISC)',
+    instruction: 'Dalam situasi konflik atau perbedaan pendapat dengan rekan kerja:',
+    options: [
+      { key: 'D', text: 'Menyampaikan argumen secara lugas, to-the-point, dan fokus pada solusi praktis.' },
+      { key: 'I', text: 'Mencairkan suasana dengan humor atau diplomasi persuasif agar suasana tetap bersahabat.' },
+      { key: 'S', text: 'Mendengarkan semua pihak dengan sabar demi menjaga keharmonisan tim.' },
+      { key: 'C', text: 'Menyajikan data, fakta objektif, dan landasan aturan resmi yang berlaku.' }
+    ]
+  },
+  {
+    module: 'disc',
+    moduleTitle: 'Modul 1: Profil Gaya Kerja (DISC)',
+    moduleBadge: 'Modul 1 / 3 (DISC)',
+    instruction: 'Lingkungan kerja yang membuat Anda paling berkembang optimal:',
+    options: [
+      { key: 'D', text: 'Penuh tantangan kompetitif, memiliki wewenang luas, dan hasil diukur dari KPI nyata.' },
+      { key: 'I', text: 'Dinamis, fleksibel, banyak kolaborasi lintas tim, dan menghargai ide-ide kreatif.' },
+      { key: 'S', text: 'Suasana kerja yang harmonis, minim intrik, serta memiliki pembagian tugas yang jelas.' },
+      { key: 'C', text: 'Terstruktur rapi, menghargai keahlian teknis spesifik, dan mengutamakan kualitas tinggi.' }
+    ]
+  },
+  {
+    module: 'disc',
+    moduleTitle: 'Modul 1: Profil Gaya Kerja (DISC)',
+    moduleBadge: 'Modul 1 / 3 (DISC)',
+    instruction: 'Kelemahan atau hal yang paling membuat Anda kurang nyaman:',
+    options: [
+      { key: 'D', text: 'Ritme kerja yang lambat, keraguan berlebihan, dan birokrasi bertele-tele.' },
+      { key: 'I', text: 'Bekerja sendirian dalam keheningan total dan mengerjakan rutinitas administratif monoton.' },
+      { key: 'S', text: 'Perubahan rencana mendadak yang tidak diiringi penjelasan dan instruksi jelas.' },
+      { key: 'C', text: 'Keputusan impulsif tanpa didasari validasi data dan standar mutu yang memadai.' }
+    ]
+  },
+  {
+    module: 'disc',
+    moduleTitle: 'Modul 1: Profil Gaya Kerja (DISC)',
+    moduleBadge: 'Modul 1 / 3 (DISC)',
+    instruction: 'Bagaimana rekan kerja biasanya menggambarkan gaya komunikasi Anda:',
+    options: [
+      { key: 'D', text: 'Tegas, percaya diri, langsung ke inti masalah, dan dominan memimpin.' },
+      { key: 'I', text: 'Hangat, ekspresif, mudah mencairkan suasana, dan komunikatif.' },
+      { key: 'S', text: 'Pendengar yang suportif, empatik, tenang, dan tidak memotong pembicaraan.' },
+      { key: 'C', text: 'Terstruktur, logis, menyertakan detail fakta, dan formal.' }
+    ]
+  },
+
+  // --- MODUL 2: MBTI (8 SOAL DIKOTOMI) ---
   {
     module: 'mbti',
     dim: 'EI',
@@ -53,8 +105,19 @@ const QUESTIONS = [
     moduleBadge: 'Modul 2 / 3 (MBTI)',
     instruction: 'Pilih pernyataan yang paling mencerminkan cara Anda mengisi ulang energi:',
     options: [
-      { key: 'E', text: 'Saya merasa berenergi saat bertukar pikiran dan aktif dalam kelompok besar.' },
-      { key: 'I', text: 'Saya merasa lebih produktif saat merenung dan fokus berpikir mendalam mandiri.' }
+      { key: 'E', text: 'Saya merasa bersemangat dan segar saat bertukar ide dalam forum interaktif atau kelompok kerja.' },
+      { key: 'I', text: 'Saya merasa lebih fokus dan berenergi saat merenung serta berpikir mendalam secara mandiri.' }
+    ]
+  },
+  {
+    module: 'mbti',
+    dim: 'EI',
+    moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
+    moduleBadge: 'Modul 2 / 3 (MBTI)',
+    instruction: 'Kecenderungan Anda saat berada di lingkungan baru:',
+    options: [
+      { key: 'E', text: 'Mudah memulai percakapan lebih dulu dan cepat menjalin relasi baru dengan rekan kerja.' },
+      { key: 'I', text: 'Cenderung mengamati situasi terlebih dahulu sebelum membuka komunikasi lebih intens.' }
     ]
   },
   {
@@ -62,10 +125,21 @@ const QUESTIONS = [
     dim: 'SN',
     moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
     moduleBadge: 'Modul 2 / 3 (MBTI)',
-    instruction: 'Pilih kecenderungan cara Anda memproses data & fakta baru:',
+    instruction: 'Pilih bagaimana Anda memproses data dan informasi baru:',
     options: [
-      { key: 'S', text: 'Fokus pada fakta nyata, pengalaman masa lalu, dan penerapan praktis di lapangan.' },
-      { key: 'N', text: 'Fokus pada visi jangka panjang, inovasi baru, dan pola-pola konseptual masa depan.' }
+      { key: 'S', text: 'Lebih mengutamakan fakta konkret, bukti nyata di lapangan, dan detail praktis saat ini.' },
+      { key: 'N', text: 'Lebih tertarik pada visi gambaran besar, inovasi masa depan, dan menghubungkan pola-pola abstrak.' }
+    ]
+  },
+  {
+    module: 'mbti',
+    dim: 'SN',
+    moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
+    moduleBadge: 'Modul 2 / 3 (MBTI)',
+    instruction: 'Saat merancang strategi baru, Anda lebih memilih:',
+    options: [
+      { key: 'S', text: 'Menggunakan metode yang sudah terbukti sukses dan teruji efektivitasnya di masa lalu.' },
+      { key: 'N', text: 'Menciptakan terobosan baru dan bereksperimen dengan pendekatan yang belum pernah dicoba.' }
     ]
   },
   {
@@ -73,10 +147,21 @@ const QUESTIONS = [
     dim: 'TF',
     moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
     moduleBadge: 'Modul 2 / 3 (MBTI)',
-    instruction: 'Pilih dasar utama Anda dalam mengambil keputusan penting:',
+    instruction: 'Prinsip utama Anda dalam mengambil keputusan profesional yang sulit:',
     options: [
-      { key: 'T', text: 'Prinsip objektivitas, analisis logika sebab-akibat, dan keadilan rasional.' },
-      { key: 'F', text: 'Nilai empati kemanusiaan, dampak emosional, dan keharmonisan hubungan tim.' }
+      { key: 'T', text: 'Analisis logika objektif, kalkulasi sebab-akibat, dan keadilan rasional berbasis performa.' },
+      { key: 'F', text: 'Pertimbangan dampak emosional, nilai kemanusiaan, serta keharmonisan hubungan tim.' }
+    ]
+  },
+  {
+    module: 'mbti',
+    dim: 'TF',
+    moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
+    moduleBadge: 'Modul 2 / 3 (MBTI)',
+    instruction: 'Ketika harus memberikan evaluasi atau feedback kepada rekan kerja:',
+    options: [
+      { key: 'T', text: 'Menyampaikan kebenaran dan kekurangan secara langsung agar efisiensi kerja cepat tercapai.' },
+      { key: 'F', text: 'Memilih kata-kata dengan hati-hati agar tidak menyinggung perasaan dan tetap memotivasi mereka.' }
     ]
   },
   {
@@ -84,59 +169,134 @@ const QUESTIONS = [
     dim: 'JP',
     moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
     moduleBadge: 'Modul 2 / 3 (MBTI)',
-    instruction: 'Pilih bagaimana Anda mengelola rencana kerja harian:',
+    instruction: 'Bagaimana Anda mengatur rencana kerja harian Anda:',
     options: [
-      { key: 'J', text: 'Jadwal kerja tertata rapi, terstruktur, dan target yang jelas sejak awal.' },
-      { key: 'P', text: 'Fleksibel, adaptif, dan siap menyesuaikan langkah saat situasi mendadak berubah.' }
+      { key: 'J', text: 'Memiliki jadwal terstruktur rapi, to-do list terencana, dan target yang dipatok sejak awal.' },
+      { key: 'P', text: 'Fleksibel, adaptif, dan siap menyesuaikan langkah ketika ada dinamika situasi baru.' }
     ]
   },
-  // IQ
+  {
+    module: 'mbti',
+    dim: 'JP',
+    moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
+    moduleBadge: 'Modul 2 / 3 (MBTI)',
+    instruction: 'Respon Anda terhadap aturan atau prosedur operasional baku (SOP):',
+    options: [
+      { key: 'J', text: 'Merasa nyaman karena ada kepastian dan panduan kerja yang jelas untuk diikuti.' },
+      { key: 'P', text: 'Merasa lebih suka jika diberikan ruang kebebasan bereksplorasi sesuai gaya kerja sendiri.' }
+    ]
+  },
+
+  // --- MODUL 3: IQ & KOGNITIF (6 SOAL MULTIDIMENSI) ---
   {
     module: 'iq',
-    moduleTitle: 'Modul 3: Logika & Kognitif (IQ Test)',
+    moduleTitle: 'Modul 3: Tes Logika & Kemampuan Kognitif (IQ)',
     moduleBadge: 'Modul 3 / 3 (IQ)',
-    instruction: 'Silogisme Logika: Semua Manajer Proyek menguasai metodologi Agile. Sebagian Manajer Proyek memiliki sertifikasi PMP. Manakah kesimpulan yang PASTI BENAR?',
+    instruction: 'Penalaran Silogisme: Semua insinyur perangkat lunak menguasai logika algoritma. Beberapa insinyur perangkat lunak menguasai arsitektur cloud. Manakah kesimpulan yang PASTI BENAR?',
     correct: 'B',
     options: [
-      { key: 'A', text: 'Semua pemegang sertifikasi PMP pasti otomatis menguasai Agile.' },
-      { key: 'B', text: 'Sebagian orang yang menguasai metodologi Agile memiliki sertifikasi PMP.' },
-      { key: 'C', text: 'Tidak ada Manajer Proyek yang tidak memiliki sertifikasi PMP.' },
-      { key: 'D', text: 'Semua yang menguasai Agile adalah Manajer Proyek.' }
+      { key: 'A', text: 'Semua yang menguasai arsitektur cloud pasti menguasai logika algoritma.' },
+      { key: 'B', text: 'Sebagian yang menguasai logika algoritma menguasai arsitektur cloud.' },
+      { key: 'C', text: 'Tidak ada insinyur perangkat lunak yang hanya menguasai arsitektur cloud.' },
+      { key: 'D', text: 'Semua insinyur perangkat lunak wajib menguasai arsitektur cloud.' }
     ]
   },
   {
     module: 'iq',
-    moduleTitle: 'Modul 3: Logika & Kognitif (IQ Test)',
+    moduleTitle: 'Modul 3: Tes Logika & Kemampuan Kognitif (IQ)',
     moduleBadge: 'Modul 3 / 3 (IQ)',
-    instruction: 'Deret Angka: Tentukan angka berikutnya dari deret: 4, 7, 12, 19, 28, ?',
+    instruction: 'Pola Deret Angka: Tentukan angka selanjutnya pada barisan: 3, 5, 9, 17, 33, ?',
     correct: 'C',
     options: [
-      { key: 'A', text: '35' },
-      { key: 'B', text: '37' },
-      { key: 'C', text: '39 (Pola penambahan ganjil: +3, +5, +7, +9, +11)' },
-      { key: 'D', text: '41' }
+      { key: 'A', text: '55' },
+      { key: 'B', text: '61' },
+      { key: 'C', text: '65 (Pola selisih: +2, +4, +8, +16, +32 -> 33 + 32 = 65)' },
+      { key: 'D', text: '67' }
     ]
   },
   {
     module: 'iq',
-    moduleTitle: 'Modul 3: Logika & Kognitif (IQ Test)',
+    moduleTitle: 'Modul 3: Tes Logika & Kemampuan Kognitif (IQ)',
     moduleBadge: 'Modul 3 / 3 (IQ)',
-    instruction: 'Analogi Verbal: DATA : KEPUTUSAN = BAHAN BAKU : ?',
+    instruction: 'Analogi Verbal: HIPOTESIS : EKSPERIMEN = RENCANA BISNIS : ?',
     correct: 'A',
     options: [
-      { key: 'A', text: 'PRODUK JADI' },
-      { key: 'B', text: 'GUDANG' },
-      { key: 'C', text: 'SUPPLIER' },
-      { key: 'D', text: 'MESIN' }
+      { key: 'A', text: 'EKSEKUSI PASAR' },
+      { key: 'B', text: 'MODAL INVESTASI' },
+      { key: 'C', text: 'LABA BERSIH' },
+      { key: 'D', text: 'KOMPETITOR' }
+    ]
+  },
+  {
+    module: 'iq',
+    moduleTitle: 'Modul 3: Tes Logika & Kemampuan Kognitif (IQ)',
+    moduleBadge: 'Modul 3 / 3 (IQ)',
+    instruction: 'Deret Angka Dua Tingkat: Tentukan nilai pengganti tanda tanya: 2, 4, 12, 48, 240, ?',
+    correct: 'D',
+    options: [
+      { key: 'A', text: '720' },
+      { key: 'B', text: '960' },
+      { key: 'C', text: '1200' },
+      { key: 'D', text: '1440 (Pola perkalian bertingkat: x2, x3, x4, x5, x6 -> 240 x 6 = 1440)' }
+    ]
+  },
+  {
+    module: 'iq',
+    moduleTitle: 'Modul 3: Tes Logika & Kemampuan Kognitif (IQ)',
+    moduleBadge: 'Modul 3 / 3 (IQ)',
+    instruction: 'Logika Deduksi: Jika tidak ada laporan keuangan yang boleh ditandatangani tanpa audit, dan laporan divisi X telah ditandatangani oleh direksi, maka:',
+    correct: 'B',
+    options: [
+      { key: 'A', text: 'Laporan divisi X belum diaudit sepenuhnya.' },
+      { key: 'B', text: 'Laporan divisi X telah diaudit.' },
+      { key: 'C', text: 'Direksi tidak memerlukan proses audit.' },
+      { key: 'D', text: 'Semua divisi wajib membuat laporan baru.' }
+    ]
+  },
+  {
+    module: 'iq',
+    moduleTitle: 'Modul 3: Tes Logika & Kemampuan Kognitif (IQ)',
+    moduleBadge: 'Modul 3 / 3 (IQ)',
+    instruction: 'Kemampuan Numerik Cepat: Sebuah tim menyelesaikan 40% proyek dalam 6 hari. Jika kecepatan kerja konstan, berapa hari total waktu yang dibutuhkan untuk menyelesaikan seluruh proyek (100%)?',
+    correct: 'C',
+    options: [
+      { key: 'A', text: '12 Hari' },
+      { key: 'B', text: '14 Hari' },
+      { key: 'C', text: '15 Hari (6 / 0.40 = 15 Hari)' },
+      { key: 'D', text: '18 Hari' }
     ]
   }
 ];
 
 export default function Home() {
-  const [view, setView] = useState('applicant-form'); // 'applicant-form', 'test-runner', 'report', 'hr-dashboard'
+  const [view, setView] = useState('applicant-form'); // 'applicant-form', 'test-runner', 'report', 'hr-dashboard', 'hr-login'
   const [db, setDb] = useState([]);
   
-  // Applicant State
+  // HR Authentication State
+  const [isHrAuthenticated, setIsHrAuthenticated] = useState(false);
+  const [hrPasswordInput, setHrPasswordInput] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [hrPinCode, setHrPinCode] = useState('admin123'); // Default Password HRD
+
+  // Daftar Posisi Default & Custom
+  const [positionsList, setPositionsList] = useState([
+    { title: 'Product Lead / Senior PM', dept: 'Product & Tech' },
+    { title: 'Senior Software Engineer (Fullstack)', dept: 'Engineering' },
+    { title: 'Business Development & Sales Lead', dept: 'Commercial & Sales' },
+    { title: 'Digital Marketing & Content Specialist', dept: 'Marketing' },
+    { title: 'Finance, Tax & Accounting Officer', dept: 'Finance & Legal' },
+    { title: 'Human Resources & Talent Acquisition', dept: 'People & Culture' },
+    { title: 'UI/UX & Product Designer', dept: 'Product & Design' },
+    { title: 'Operations & Quality Assurance Lead', dept: 'Operations' }
+  ]);
+
+  // Modal Tambah Posisi
+  const [showAddPosModal, setShowAddPosModal] = useState(false);
+  const [newPosTitle, setNewPosTitle] = useState('');
+  const [newPosDept, setNewPosDept] = useState('');
+
+  // Form Pelamar State
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -148,51 +308,59 @@ export default function Home() {
   const [currentApplicant, setCurrentApplicant] = useState(null);
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(600);
+  const [timeLeft, setTimeLeft] = useState(900); // 15 Menit
   const [activeReport, setActiveReport] = useState(null);
 
-  // Load Seed Database
+  // Load Saved Database & PIN
   useEffect(() => {
-    const local = localStorage.getItem('tm_assessment_db');
-    if (local) {
-      setDb(JSON.parse(local));
+    const savedDb = localStorage.getItem('tm_assessment_db_v3');
+    const savedPos = localStorage.getItem('tm_custom_positions');
+    const savedPin = localStorage.getItem('tm_hr_pin');
+    
+    if (savedPin) setHrPinCode(savedPin);
+    if (savedPos) {
+      try { setPositionsList(JSON.parse(savedPos)); } catch (e) {}
+    }
+
+    if (savedDb) {
+      try { setDb(JSON.parse(savedDb)); } catch (e) {}
     } else {
       const seed = [
         {
-          id: 'APP-2026-8801',
+          id: 'APP-2026-9901',
           name: 'Aditya Pratama, S.Kom.',
-          email: 'aditya.p@gmail.com',
+          email: 'aditya.p@perusahaan.com',
           phone: '081234567890',
           position: 'Product Lead / Senior PM',
           dept: 'Product & Tech',
           date: '28 Ags 2026',
-          disc: { d: 85, i: 50, s: 35, c: 75, dom: 'D-C' },
-          mbti: { type: 'ENTJ', title: 'The Commander', desc: 'Pemimpin visioner dan pengambil keputusan tegas.' },
-          iq: { score: 126, cat: 'Superior', correct: 3, total: 3 },
-          match: 94,
+          disc: { d: 88, i: 54, s: 38, c: 78, dom: 'D-C' },
+          mbti: { type: 'ENTJ', title: 'The Commander', desc: 'Pemimpin strategis dengan dorongan eksekusi target yang kuat.' },
+          iq: { score: 128, cat: 'Superior', correct: 6, total: 6 },
+          match: 95,
           status: 'STRONGLY RECOMMENDED'
         },
         {
-          id: 'APP-2026-8802',
+          id: 'APP-2026-9902',
           name: 'Jessica Clarissa, B.A.',
-          email: 'jessica.c@gmail.com',
+          email: 'jessica.c@perusahaan.com',
           phone: '081122334455',
-          position: 'Business Development / Sales Lead',
-          dept: 'Commercial',
+          position: 'Business Development & Sales Lead',
+          dept: 'Commercial & Sales',
           date: '28 Ags 2026',
-          disc: { d: 70, i: 90, s: 60, c: 40, dom: 'I-D' },
-          mbti: { type: 'ENFP', title: 'The Campaigner', desc: 'Sangat komunikatif, kreatif, dan inspiratif.' },
-          iq: { score: 118, cat: 'High Average', correct: 2, total: 3 },
-          match: 88,
+          disc: { d: 72, i: 92, s: 58, c: 42, dom: 'I-D' },
+          mbti: { type: 'ENFP', title: 'The Campaigner', desc: 'Sangat komunikatif, ramah, dan piawai membangun kemitraan bisnis.' },
+          iq: { score: 118, cat: 'Di Atas Rata-rata', correct: 4, total: 6 },
+          match: 89,
           status: 'STRONGLY RECOMMENDED'
         }
       ];
       setDb(seed);
-      localStorage.setItem('tm_assessment_db', JSON.stringify(seed));
+      localStorage.setItem('tm_assessment_db_v3', JSON.stringify(seed));
     }
   }, []);
 
-  // Timer Countdown
+  // Timer Countdown Effect
   useEffect(() => {
     let timer = null;
     if (view === 'test-runner' && timeLeft > 0) {
@@ -210,6 +378,65 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [view, timeLeft]);
 
+  // HR Login Handler
+  const handleHrLogin = (e) => {
+    e.preventDefault();
+    if (hrPasswordInput === hrPinCode) {
+      setIsHrAuthenticated(true);
+      setLoginError('');
+      setHrPasswordInput('');
+      setView('hr-dashboard');
+    } else {
+      setLoginError('Password / PIN HRD salah! Silakan coba lagi.');
+    }
+  };
+
+  const handleHrLogout = () => {
+    setIsHrAuthenticated(false);
+    setView('applicant-form');
+  };
+
+  const handleChangePin = () => {
+    const newPin = prompt('Masukkan Password / PIN HRD Baru:');
+    if (newPin && newPin.trim().length >= 4) {
+      setHrPinCode(newPin.trim());
+      localStorage.setItem('tm_hr_pin', newPin.trim());
+      alert('Password HRD berhasil diubah menjadi: ' + newPin.trim());
+    } else if (newPin) {
+      alert('Password minimal 4 karakter!');
+    }
+  };
+
+  // Navigasi ke Portal HRD dengan Proteksi
+  const navigateToHrPortal = () => {
+    if (isHrAuthenticated) {
+      setView('hr-dashboard');
+    } else {
+      setLoginError('');
+      setHrPasswordInput('');
+      setView('hr-login');
+    }
+  };
+
+  // Tambah Posisi Baru ke Daftar
+  const handleAddNewPosition = (e) => {
+    e.preventDefault();
+    if (!newPosTitle.trim()) return;
+    const newPos = {
+      title: newPosTitle.trim(),
+      dept: newPosDept.trim() || 'General Business'
+    };
+    const updated = [...positionsList, newPos];
+    setPositionsList(updated);
+    localStorage.setItem('tm_custom_positions', JSON.stringify(updated));
+    setForm({ ...form, position: newPos.title, dept: newPos.dept });
+    setNewPosTitle('');
+    setNewPosDept('');
+    setShowAddPosModal(false);
+    alert(`Posisi "${newPos.title}" berhasil ditambahkan!`);
+  };
+
+  // Mulai Tes
   const handleStartTest = (e) => {
     e.preventDefault();
     const applicant = {
@@ -220,46 +447,76 @@ export default function Home() {
     setCurrentApplicant(applicant);
     setAnswers({});
     setQIndex(0);
-    setTimeLeft(600);
+    setTimeLeft(900);
     setView('test-runner');
   };
 
+  // Kalkulasi Skor
   const calculateResults = () => {
     // 1. DISC Scoring
-    let d = 50, i = 45, s = 40, c = 55;
+    let d = 40, i = 35, s = 30, c = 45;
     Object.keys(answers).forEach(k => {
       if (k.endsWith('_most')) {
         const val = answers[k];
-        if (val === 'D') d += 18;
-        if (val === 'I') i += 18;
-        if (val === 'S') s += 18;
-        if (val === 'C') c += 18;
+        if (val === 'D') d += 10;
+        if (val === 'I') i += 10;
+        if (val === 'S') s += 10;
+        if (val === 'C') c += 10;
+      }
+      if (k.endsWith('_least')) {
+        const val = answers[k];
+        if (val === 'D') d -= 4;
+        if (val === 'I') i -= 4;
+        if (val === 'S') s -= 4;
+        if (val === 'C') c -= 4;
       }
     });
-    d = Math.min(95, d);
-    i = Math.min(95, i);
-    s = Math.min(95, s);
-    c = Math.min(95, c);
+    d = Math.min(95, Math.max(20, d));
+    i = Math.min(95, Math.max(20, i));
+    s = Math.min(95, Math.max(20, s));
+    c = Math.min(95, Math.max(20, c));
 
     let dom = 'D-C';
-    if (i > d && i > c) dom = 'I-D';
-    if (s > d && s > c) dom = 'S-C';
+    if (i >= d && i >= c && i >= s) dom = 'I-D';
+    else if (d >= i && d >= s && d >= c) dom = 'D-C';
+    else if (s >= d && s >= i && s >= c) dom = 'S-C';
+    else if (c >= d && c >= i && c >= s) dom = 'C-S';
 
-    // 2. MBTI
-    const e_i = answers['mbti_EI'] || 'E';
-    const s_n = answers['mbti_SN'] || 'N';
-    const t_f = answers['mbti_TF'] || 'T';
-    const j_p = answers['mbti_JP'] || 'J';
-    const mbtiType = `${e_i}${s_n}${t_f}${j_p}`;
+    // 2. MBTI Scoring
+    let eCount = 0, iCount = 0;
+    let sCount = 0, nCount = 0;
+    let tCount = 0, fCount = 0;
+    let jCount = 0, pCount = 0;
+
+    Object.keys(answers).forEach(k => {
+      if (k.startsWith('mbti_')) {
+        const val = answers[k];
+        if (val === 'E') eCount++;
+        if (val === 'I') iCount++;
+        if (val === 'S') sCount++;
+        if (val === 'N') nCount++;
+        if (val === 'T') tCount++;
+        if (val === 'F') fCount++;
+        if (val === 'J') jCount++;
+        if (val === 'P') pCount++;
+      }
+    });
+
+    const mbtiType = `${eCount >= iCount ? 'E' : 'I'}${nCount >= sCount ? 'N' : 'S'}${tCount >= fCount ? 'T' : 'F'}${jCount >= pCount ? 'J' : 'P'}`;
 
     const mbtiDict = {
-      ENTJ: { title: 'The Commander', desc: 'Pemimpin strategis dengan orientasi eksekusi target yang kuat.' },
-      INTJ: { title: 'The Architect', desc: 'Pemikir logis mendalam, perancang sistem yang sistematis.' },
-      ENTP: { title: 'The Visionary', desc: 'Inovatif, adaptif, dan pandai menyelesaikan masalah kompleks.' },
-      ESTJ: { title: 'The Executive', desc: 'Sangat terstruktur, disiplin operasional, dan berorientasi hasil.' },
-      ENFP: { title: 'The Campaigner', desc: 'Kreatif, supel, dan pandai memotivasi semangat tim.' }
+      ENTJ: { title: 'The Commander', desc: 'Pemimpin strategis, tegas mengambil keputusan, dan berorientasi hasil jangka panjang.' },
+      INTJ: { title: 'The Architect', desc: 'Pemikir logis mendalam, perancang sistem yang terstruktur, dan visioner.' },
+      ENTP: { title: 'The Visionary', desc: 'Cepat melihat peluang bisnis baru, fleksibel, dan pandai memecahkan masalah rumit.' },
+      INTP: { title: 'The Logician', desc: 'Sangat analitis, independen, dan berorientasi pada ketepatan teori konseptual.' },
+      ESTJ: { title: 'The Executive', desc: 'Disiplin operasional tinggi, terorganisir rapi, dan eksekutor yang sangat solid.' },
+      ISTJ: { title: 'The Inspector', desc: 'Teliti, bertanggung jawab, taat SOP, dan dapat diandalkan dalam tugas berulang.' },
+      ENFP: { title: 'The Campaigner', desc: 'Kreatif, energik, komunikator ulung, dan cepat membangun hubungan interpersonal.' },
+      INFP: { title: 'The Mediator', desc: 'Idealis, penuh empati, memegang teguh integritas, dan berorientasi solusi harmonis.' },
+      ESFJ: { title: 'The Provider', desc: 'Hangat, loyal, suportif, dan pandai mengelola kebutuhan tim serta klien.' },
+      ISFJ: { title: 'The Protector', desc: 'Pekerja keras yang berdedikasi, telaten, dan selalu menjaga keteraturan kerja.' }
     };
-    const mbtiMeta = mbtiDict[mbtiType] || { title: 'Strategic Thinker', desc: 'Memiliki kombinasi karakter analitis dan adaptif.' };
+    const mbtiMeta = mbtiDict[mbtiType] || { title: 'Strategic Specialist', desc: 'Memiliki kombinasi karakter analitis, fokus, dan adaptif.' };
 
     // 3. IQ Scoring
     let correct = 0;
@@ -268,29 +525,34 @@ export default function Home() {
         correct++;
       }
     });
-    const iqScore = 100 + (correct * 9);
-    let iqCat = 'Rata-rata';
+
+    const iqScore = 90 + Math.round((correct / 6) * 40);
+    let iqCat = 'Rata-rata (Average)';
     if (iqScore >= 125) iqCat = 'Superior';
     else if (iqScore >= 115) iqCat = 'Di Atas Rata-rata';
+    else if (iqScore < 95) iqCat = 'Di Bawah Rata-rata';
 
     // 4. Match Score
-    let match = 78;
-    if (iqScore >= 118) match += 10;
-    if (mbtiType.includes('T') && mbtiType.includes('J')) match += 6;
-    match = Math.min(95, match);
+    let match = 70;
+    if (iqScore >= 120) match += 14;
+    else if (iqScore >= 110) match += 8;
+
+    if (mbtiType.includes('T')) match += 6;
+    if (mbtiType.includes('J')) match += 5;
+    match = Math.min(97, Math.max(50, match));
 
     const resultObj = {
       ...currentApplicant,
       disc: { d, i, s, c, dom },
       mbti: { type: mbtiType, title: mbtiMeta.title, desc: mbtiMeta.desc },
-      iq: { score: iqScore, cat: iqCat, correct, total: 3 },
+      iq: { score: iqScore, cat: iqCat, correct, total: 6 },
       match,
-      status: match >= 80 ? 'STRONGLY RECOMMENDED' : 'CONSIDER'
+      status: match >= 85 ? 'STRONGLY RECOMMENDED' : (match >= 70 ? 'RECOMMENDED' : 'CONSIDER')
     };
 
     const newDb = [resultObj, ...db];
     setDb(newDb);
-    localStorage.setItem('tm_assessment_db', JSON.stringify(newDb));
+    localStorage.setItem('tm_assessment_db_v3', JSON.stringify(newDb));
 
     setActiveReport(resultObj);
     setView('report');
@@ -324,7 +586,7 @@ export default function Home() {
 
   return (
     <>
-      {/* Top Navigation */}
+      {/* Top Navbar */}
       <header className="bg-slate-900 text-white sticky top-0 z-50 border-b border-slate-800 shadow-md no-print">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setView('applicant-form')}>
@@ -333,11 +595,11 @@ export default function Home() {
             </div>
             <div>
               <span className="font-extrabold text-base tracking-tight bg-gradient-to-r from-white via-slate-100 to-sky-400 bg-clip-text text-transparent">TalentMatrix AI</span>
-              <span className="text-[10px] ml-2 px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 font-semibold border border-sky-500/30">Vercel Ready</span>
+              <span className="text-[10px] ml-2 px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 font-semibold border border-sky-500/30">Secure Edition</span>
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             <button 
               onClick={() => setView('applicant-form')} 
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition ${view === 'applicant-form' || view === 'test-runner' ? 'bg-sky-600 text-white shadow' : 'text-slate-300 hover:text-white'}`}
@@ -346,29 +608,29 @@ export default function Home() {
               <span>Tes Pelamar</span>
             </button>
             <button 
-              onClick={() => setView('hr-dashboard')} 
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition ${view === 'hr-dashboard' ? 'bg-sky-600 text-white shadow' : 'text-slate-300 hover:text-white border border-slate-700'}`}
+              onClick={navigateToHrPortal} 
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition ${view === 'hr-dashboard' || view === 'hr-login' ? 'bg-sky-600 text-white shadow' : 'text-slate-300 hover:text-white border border-slate-700'}`}
             >
-              <ShieldCheck className="w-4 h-4" />
-              <span>Portal HRD ({db.length})</span>
+              <Lock className="w-4 h-4" />
+              <span>{isHrAuthenticated ? 'Portal HRD (Aktif)' : 'Login HRD'}</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* MAIN CONTAINER */}
+      {/* Main Container */}
       <main className="max-w-4xl mx-auto w-full px-4 py-8 flex-1 flex flex-col justify-center">
 
-        {/* 1. FORM DATA DIRI */}
+        {/* 1. FORM PENDAFTARAN PELAMAR */}
         {view === 'applicant-form' && (
           <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-10 relative">
             <div className="max-w-xl mx-auto text-center space-y-2 mb-8">
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-sky-50 text-sky-700 text-xs font-bold border border-sky-200">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Online Pre-Employment Screening</span>
+                <span>Standardized Pre-Employment Testing</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Formulir Pendaftaran Tes</h1>
-              <p className="text-xs sm:text-sm text-slate-500">Lengkapi data diri di bawah ini untuk memulai asesmen psikometri & kognitif.</p>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Formulir Data Diri Pelamar</h1>
+              <p className="text-xs sm:text-sm text-slate-500">Pilih posisi yang dilamar dan mulai tes evaluasi psikometri & kognitif.</p>
             </div>
 
             <form onSubmit={handleStartTest} className="max-w-lg mx-auto space-y-4">
@@ -392,12 +654,12 @@ export default function Home() {
                     required 
                     value={form.email} 
                     onChange={e => setForm({...form, email: e.target.value})} 
-                    placeholder="nama@email.com" 
+                    placeholder="pelamar@email.com" 
                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none" 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">No. WhatsApp *</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">No. WhatsApp / HP *</label>
                   <input 
                     type="tel" 
                     required 
@@ -409,41 +671,169 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Posisi yang Dilamar */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">Posisi yang Dilamar *</label>
+                <div className="flex justify-between items-center mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 uppercase">Posisi yang Dilamar *</label>
+                  <button 
+                    type="button" 
+                    onClick={() => setShowAddPosModal(true)} 
+                    className="text-[11px] font-bold text-sky-600 hover:text-sky-700 flex items-center space-x-1"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>+ Tambah Posisi Baru</span>
+                  </button>
+                </div>
                 <select 
                   value={form.position} 
                   onChange={e => {
-                    const pos = e.target.value;
-                    let dept = 'General';
-                    if (pos.includes('Product')) dept = 'Product & Tech';
-                    if (pos.includes('Software')) dept = 'Engineering';
-                    if (pos.includes('Sales')) dept = 'Commercial';
-                    setForm({...form, position: pos, dept});
+                    const selTitle = e.target.value;
+                    const matched = positionsList.find(p => p.title === selTitle);
+                    setForm({
+                      ...form, 
+                      position: selTitle, 
+                      dept: matched ? matched.dept : 'General Department'
+                    });
                   }} 
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-sky-500 focus:outline-none"
                 >
-                  <option value="Product Lead / Senior PM">Product Lead / Senior PM</option>
-                  <option value="Senior Software Engineer">Senior Software Engineer</option>
-                  <option value="Business Development / Sales Lead">Business Development / Sales Lead</option>
-                  <option value="Finance & Accounting Specialist">Finance & Accounting Specialist</option>
+                  {positionsList.map((pos, idx) => (
+                    <option key={idx} value={pos.title}>
+                      {pos.title} ({pos.dept})
+                    </option>
+                  ))}
                 </select>
               </div>
 
-              <div className="p-4 bg-sky-50 rounded-2xl border border-sky-100 text-xs text-sky-900 space-y-1">
-                <div className="font-bold flex items-center space-x-1.5"><Info className="w-4 h-4 text-sky-600" /><span>Tahapan Tes:</span></div>
-                <p>1. DISC (Gaya Kerja) • 2. MBTI (Kepribadian) • 3. Tes IQ (Logika & Deret)</p>
+              <div className="p-4 bg-sky-50 rounded-2xl border border-sky-100 text-xs text-sky-900 space-y-1.5">
+                <div className="font-bold flex items-center space-x-1.5">
+                  <Info className="w-4 h-4 text-sky-600" />
+                  <span>Struktur Tes Akurasi Tinggi (20 Instrumen):</span>
+                </div>
+                <ul className="list-disc list-inside space-y-0.5 text-slate-600">
+                  <li><strong>DISC (6 Instrumen):</strong> Analisis gaya kerja & dominasi komunikasi.</li>
+                  <li><strong>MBTI (8 Instrumen):</strong> Pemetaan 16 tipe preferensi kepribadian.</li>
+                  <li><strong>IQ Kognitif (6 Instrumen):</strong> Penalaran logika, silogisme, & numerik.</li>
+                </ul>
               </div>
 
               <button type="submit" className="w-full py-3.5 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-sky-500/25 flex items-center justify-center space-x-2 transition">
-                <span>Mulai Tes Sekarang</span>
+                <span>Mulai Pengerjaan Tes Lengkap</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
           </div>
         )}
 
-        {/* 2. TEST RUNNER */}
+        {/* MODAL POPUP: TAMBAH POSISI BARU */}
+        {showAddPosModal && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-200">
+              <div className="flex items-center space-x-2.5 pb-3 border-b border-slate-100">
+                <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center">
+                  <Briefcase className="w-4 h-4" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-sm">Tambah Lowongan / Posisi Baru</h3>
+              </div>
+
+              <form onSubmit={handleAddNewPosition} className="space-y-3.5">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Nama Jabatan / Posisi *</label>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="Contoh: Digital Media Strategist" 
+                    value={newPosTitle} 
+                    onChange={e => setNewPosTitle(e.target.value)} 
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Departemen Terkait</label>
+                  <input 
+                    type="text" 
+                    placeholder="Contoh: Growth & Marketing" 
+                    value={newPosDept} 
+                    onChange={e => setNewPosDept(e.target.value)} 
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-2 pt-2">
+                  <button 
+                    type="button" 
+                    onClick={() => setShowAddPosModal(false)} 
+                    className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100"
+                  >
+                    Batal
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold shadow"
+                  >
+                    Simpan Posisi
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* 2. HR LOGIN VIEW (PASSWORD / PIN PROTECTED) */}
+        {view === 'hr-login' && (
+          <div className="max-w-md mx-auto w-full bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center mx-auto font-bold shadow-inner">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h2 className="text-xl font-black text-slate-900">Login Portal HRD</h2>
+              <p className="text-xs text-slate-500">Area terproteksi khusus tim HR & Recruiter. Pelamar tidak diizinkan masuk.</p>
+            </div>
+
+            <form onSubmit={handleHrLogin} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">Password / PIN Keamanan</label>
+                <div className="relative">
+                  <input 
+                    type={showPassword ? 'text' : 'password'}
+                    required 
+                    value={hrPasswordInput} 
+                    onChange={e => setHrPasswordInput(e.target.value)} 
+                    placeholder="Masukkan password HR..." 
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none pr-10"
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => setShowPassword(!showPassword)} 
+                    className="absolute right-3 top-3 text-slate-400 hover:text-slate-600"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                {loginError && (
+                  <p className="text-[11px] text-rose-500 font-semibold mt-1.5">{loginError}</p>
+                )}
+                <p className="text-[10px] text-slate-400 mt-1">Default password bawaan: <code className="font-mono font-bold bg-slate-100 px-1 py-0.5 rounded text-slate-700">admin123</code></p>
+              </div>
+
+              <button type="submit" className="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold shadow flex items-center justify-center space-x-2 transition">
+                <KeyRound className="w-4 h-4" />
+                <span>Masuk ke Dashboard HR</span>
+              </button>
+
+              <button 
+                type="button" 
+                onClick={() => setView('applicant-form')} 
+                className="w-full text-center text-xs font-semibold text-slate-400 hover:text-slate-600 pt-2"
+              >
+                Kembali ke Halaman Tes Pelamar
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* 3. TEST RUNNER (RESPONSIVE QUESTIONNAIRE) */}
         {view === 'test-runner' && q && (
           <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
             <div className="flex justify-between items-center pb-4 border-b border-slate-100">
@@ -471,15 +861,16 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Question Card */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 min-h-[220px]">
+            {/* Dynamic Question Box */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 min-h-[240px]">
               <p className="text-xs font-bold text-slate-700 mb-3">{q.instruction}</p>
 
+              {/* DISC Options */}
               {q.module === 'disc' && (
                 <div className="space-y-2">
                   {q.options.map((opt) => (
-                    <div key={opt.key} className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-slate-200">
-                      <span className="text-xs font-medium text-slate-700 flex-1 pr-2">{opt.text}</span>
+                    <div key={opt.key} className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-slate-200 hover:border-sky-300 transition">
+                      <span className="text-xs font-medium text-slate-700 flex-1 pr-3">{opt.text}</span>
                       <div className="flex items-center space-x-3 text-xs font-bold">
                         <label className="flex items-center space-x-1 text-sky-600 cursor-pointer">
                           <input 
@@ -507,23 +898,25 @@ export default function Home() {
                 </div>
               )}
 
+              {/* MBTI Options */}
               {q.module === 'mbti' && (
                 <div className="space-y-2.5">
                   {q.options.map((opt) => (
                     <label key={opt.key} className="flex items-start space-x-3 p-4 bg-white rounded-xl border border-slate-200 hover:border-purple-300 cursor-pointer transition">
                       <input 
                         type="radio" 
-                        name={`mbti_${q.dim}`} 
-                        checked={answers[`mbti_${q.dim}`] === opt.key} 
-                        onChange={() => setAnswers({...answers, [`mbti_${q.dim}`]: opt.key})} 
+                        name={`mbti_${qIndex}`} 
+                        checked={answers[`mbti_${qIndex}`] === opt.key} 
+                        onChange={() => setAnswers({...answers, [`mbti_${qIndex}`]: opt.key})} 
                         className="mt-0.5 accent-purple-600" 
                       />
-                      <span className="text-xs font-medium text-slate-700">{opt.text}</span>
+                      <span className="text-xs font-medium text-slate-700 leading-relaxed">{opt.text}</span>
                     </label>
                   ))}
                 </div>
               )}
 
+              {/* IQ Options */}
               {q.module === 'iq' && (
                 <div className="space-y-2">
                   {q.options.map((opt) => (
@@ -543,7 +936,7 @@ export default function Home() {
               )}
             </div>
 
-            {/* Actions */}
+            {/* Navigation Buttons */}
             <div className="flex justify-between pt-4 border-t border-slate-100">
               <button 
                 disabled={qIndex === 0} 
@@ -556,24 +949,24 @@ export default function Home() {
                 onClick={handleNext} 
                 className="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-xl shadow transition"
               >
-                {qIndex === QUESTIONS.length - 1 ? 'Selesai & Lihat Hasil' : 'Lanjut Soal Berikutnya'}
+                {qIndex === QUESTIONS.length - 1 ? 'Selesai & Komputasi Laporan' : 'Lanjut Soal Berikutnya'}
               </button>
             </div>
           </div>
         )}
 
-        {/* 3. REPORT & PDF VIEW */}
+        {/* 4. LAPORAN HASIL ASESMEN INDIVIDU & PDF EXPORT */}
         {view === 'report' && activeReport && (
           <div className="space-y-6">
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-center no-print">
               <div className="flex items-center space-x-2">
                 <CheckCircle className="w-5 h-5 text-emerald-600" />
-                <span className="text-xs font-extrabold text-slate-800">Laporan Asesmen Telah Terbit</span>
+                <span className="text-xs font-extrabold text-slate-800">Laporan Asesmen Komprehensif Berhasil Diterbitkan</span>
               </div>
               <div className="flex items-center space-x-2">
                 <button onClick={downloadPdf} className="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center space-x-2 shadow">
                   <Download className="w-4 h-4" />
-                  <span>Download PDF</span>
+                  <span>Download PDF Resmi</span>
                 </button>
                 <button onClick={() => window.print()} className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center space-x-1">
                   <Printer className="w-4 h-4" />
@@ -582,17 +975,17 @@ export default function Home() {
               </div>
             </div>
 
-            {/* PRINTABLE AREA */}
+            {/* DOCUMENT PRINT CONTAINER */}
             <div id="printable-report" className="bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 sm:p-10 space-y-6">
               <div className="bg-slate-900 text-white p-6 rounded-2xl flex justify-between items-center">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-sky-400">HR ASSESSMENT REPORT</span>
-                  <h1 className="text-xl sm:text-2xl font-black mt-0.5">HASIL ASESMEN PELAMAR</h1>
-                  <p className="text-xs text-slate-400">Evaluasi Terpadu: Profil DISC, MBTI & Skor IQ Terstandar</p>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-sky-400">STANDARDIZED TALENT ASSESSMENT REPORT</span>
+                  <h1 className="text-xl sm:text-2xl font-black mt-0.5">LAPORAN HASIL ASESMEN PELAMAR</h1>
+                  <p className="text-xs text-slate-400">Evaluasi Terpadu: Profil DISC, Preferensi MBTI & Skor IQ Deviasi Baku</p>
                 </div>
                 <div className="px-4 py-2 rounded-xl bg-emerald-500 text-white font-extrabold text-xs text-center">
                   {activeReport.status}<br />
-                  <span className="text-[11px] font-medium">Fit: {activeReport.match}%</span>
+                  <span className="text-[11px] font-medium">Fit Index: {activeReport.match}%</span>
                 </div>
               </div>
 
@@ -600,15 +993,15 @@ export default function Home() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-4 rounded-xl text-xs border border-slate-200">
                 <div><span className="text-slate-400 block font-bold text-[10px]">Nama:</span><strong>{activeReport.name}</strong></div>
                 <div><span className="text-slate-400 block font-bold text-[10px]">Token ID:</span><strong>{activeReport.id}</strong></div>
-                <div><span className="text-slate-400 block font-bold text-[10px]">Posisi:</span><strong>{activeReport.position}</strong></div>
-                <div><span className="text-slate-400 block font-bold text-[10px]">Tanggal:</span><strong>{activeReport.date}</strong></div>
+                <div><span className="text-slate-400 block font-bold text-[10px]">Posisi Dilamar:</span><strong>{activeReport.position}</strong></div>
+                <div><span className="text-slate-400 block font-bold text-[10px]">Tanggal Tes:</span><strong>{activeReport.date}</strong></div>
               </div>
 
               {/* Charts & Breakdown */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-black text-slate-800">A. Profil DISC</span>
+                    <span className="text-xs font-black text-slate-800">A. Profil Gaya Kerja (DISC)</span>
                     <span className="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[10px] font-bold">Pola: {activeReport.disc.dom}</span>
                   </div>
                   <div className="h-44 flex items-center justify-center">
@@ -640,10 +1033,10 @@ export default function Home() {
                   <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
                     <div className="flex justify-between items-center">
                       <span className="text-xs font-black text-slate-800">B. Tipe MBTI</span>
-                      <span className="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-xs font-black">{activeReport.mbti.type}</span>
+                      <span className="px-2.5 py-0.5 rounded bg-purple-100 text-purple-800 text-xs font-black">{activeReport.mbti.type}</span>
                     </div>
                     <div className="text-xs font-bold text-purple-900">{activeReport.mbti.title}</div>
-                    <p className="text-[11px] text-slate-600">{activeReport.mbti.desc}</p>
+                    <p className="text-[11px] text-slate-600 leading-relaxed">{activeReport.mbti.desc}</p>
                   </div>
 
                   <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
@@ -652,43 +1045,54 @@ export default function Home() {
                       <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">{activeReport.iq.cat}</span>
                     </div>
                     <div className="text-2xl font-black text-sky-600">{activeReport.iq.score} <span className="text-xs font-medium text-slate-500">Skala Baku SD 15</span></div>
-                    <p className="text-[11px] text-slate-600">Benar {activeReport.iq.correct} dari {activeReport.iq.total} instrumen logika.</p>
+                    <p className="text-[11px] text-slate-600">Menjawab benar {activeReport.iq.correct} dari {activeReport.iq.total} instrumen logika & silogisme.</p>
                   </div>
                 </div>
               </div>
 
               {/* Recommendation */}
               <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 space-y-1">
-                <span className="text-xs font-bold text-emerald-900">Kesimpulan Kesesuaian Posisi ({activeReport.match}% Fit):</span>
-                <p className="text-xs text-emerald-900">Kandidat memiliki kapasitas analitis tinggi dengan kepemimpinan berbasis data. Sangat direkomendasikan untuk posisi <strong>{activeReport.position}</strong>.</p>
+                <span className="text-xs font-bold text-emerald-900">Analisis Kecocokan Posisi ({activeReport.match}% Match Index):</span>
+                <p className="text-xs text-emerald-900 leading-relaxed">
+                  Kombinasi kepribadian {activeReport.mbti.type} dengan profil DISC {activeReport.disc.dom} dan skor IQ {activeReport.iq.score} ({activeReport.iq.cat}) menunjukkan kesiapan kerja yang sangat baik untuk mengisi peranan <strong>{activeReport.position}</strong> di departemen <strong>{activeReport.dept}</strong>.
+                </p>
               </div>
 
               {/* Signature */}
               <div className="grid grid-cols-2 text-center text-xs text-slate-600 pt-6">
                 <div>
                   <div className="h-12 flex items-end justify-center italic text-slate-400">Assessor Signature</div>
-                  <div className="border-t border-slate-400 w-36 mx-auto pt-1 font-bold">Maya Safitri, S.Psi.</div>
+                  <div className="border-t border-slate-400 w-36 mx-auto pt-1 font-bold">Maya Safitri, S.Psi., M.M.</div>
                 </div>
                 <div>
                   <div className="h-12 flex items-end justify-center italic text-slate-400">HR Approval</div>
-                  <div className="border-t border-slate-400 w-36 mx-auto pt-1 font-bold">Budi Santoso, MBA</div>
+                  <div className="border-t border-slate-400 w-36 mx-auto pt-1 font-bold">Budi Santoso, S.E., MBA</div>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* 4. HR DASHBOARD */}
-        {view === 'hr-dashboard' && (
+        {/* 5. REKAP PORTAL HRD (TERLINDUNGI PASSWORD) */}
+        {view === 'hr-dashboard' && isHrAuthenticated && (
           <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
-            <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+            <div className="flex flex-wrap justify-between items-center gap-4 pb-4 border-b border-slate-100">
               <div>
-                <h2 className="text-xl font-black text-slate-900">Portal Rekap Pelamar HRD</h2>
-                <p className="text-xs text-slate-500">Tersimpan otomatis di cloud/local storage.</p>
+                <div className="flex items-center space-x-2">
+                  <h2 className="text-xl font-black text-slate-900">Portal Rekap Pelamar HRD</h2>
+                  <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">Sesi Terverifikasi</span>
+                </div>
+                <p className="text-xs text-slate-500">Akses privat data pelamar, skor tes, dan dokumen laporan.</p>
               </div>
-              <button onClick={() => setView('applicant-form')} className="px-4 py-2 bg-sky-600 text-white rounded-xl text-xs font-bold">
-                + Tes Baru
-              </button>
+              <div className="flex items-center space-x-2">
+                <button onClick={handleChangePin} className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200">
+                  Ganti Password HR
+                </button>
+                <button onClick={handleHrLogout} className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-bold border border-rose-200 flex items-center space-x-1">
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Logout</span>
+                </button>
+              </div>
             </div>
 
             <div className="overflow-x-auto">
