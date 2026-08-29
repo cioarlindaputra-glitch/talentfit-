@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Award, Brain, CheckCircle, Clock, Download, Plus, 
   Printer, ShieldCheck, Sparkles, UserPlus, ArrowRight, Info, Briefcase,
-  Lock, KeyRound, LogOut, Eye, EyeOff, Calculator, Megaphone, Trash2, HeartHandshake, Search, FileDown, MessageCircle, Database, Settings
+  Lock, KeyRound, LogOut, Eye, EyeOff, Calculator, Megaphone, Trash2, HeartHandshake, Search, FileDown, Building2
 } from 'lucide-react';
 import {
   Chart as ChartJS,
@@ -20,56 +20,56 @@ import { Radar } from 'react-chartjs-2';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 // =========================================================================
-// 1. BANK SOAL UMUM (DISC & MBTI)
+// 1. BANK SOAL UMUM (DISC, MBTI & IQ KOGNITIF)
 // =========================================================================
 const BASE_QUESTIONS = [
-  // --- DISC (8 Soal) ---
+  // --- MODUL 1: DISC (8 Soal Gaya Kerja) ---
   {
     module: 'disc',
     moduleTitle: 'Modul 1: Gaya Kerja & Komunikasi (DISC)',
     moduleBadge: 'Modul 1 (DISC)',
     instruction: 'Pilih 1 opsi yang PALING sesuai (Most) dan 1 opsi yang PALING TIDAK sesuai (Least) dengan karakter kerja Anda:',
     options: [
-      { key: 'D', text: 'Tegas, cepat mengambil keputusan, dan berani mengambil risiko.' },
-      { key: 'I', text: 'Ramah, antusias, mudah tersenyum, dan senang berinteraksi dengan orang baru.' },
+      { key: 'D', text: 'Tegas, cepat mengambil keputusan, dan berani mengejar target tinggi.' },
+      { key: 'I', text: 'Ramah, antusias, persuasif, dan pandai menjalin hubungan dengan orang baru.' },
       { key: 'S', text: 'Sabar, tenang, setia kawan, dan menyukai ritme kerja yang stabil.' },
-      { key: 'C', text: 'Teliti, disiplin, taat SOP, dan mengutamakan kerapian serta ketepatan data.' }
+      { key: 'C', text: 'Teliti, disiplin, taat SOP, dan mengutamakan akurasi data serta kerapian.' }
     ]
   },
   {
     module: 'disc',
     moduleTitle: 'Modul 1: Gaya Kerja & Komunikasi (DISC)',
     moduleBadge: 'Modul 1 (DISC)',
-    instruction: 'Saat outlet/ruang kerja sedang sangat padat dan antrean membeludak:',
+    instruction: 'Saat menghadapi deadline ketat, antrean ramai, atau target closing mendesak:',
     options: [
-      { key: 'D', text: 'Mengambil kendali kecepatan pelayanan agar antrean cepat terurai.' },
-      { key: 'I', text: 'Menyapa pelanggan dengan senyum hangat agar mereka tidak jenuh menunggu.' },
-      { key: 'S', text: 'Bekerja dengan ritme stabil, tidak panik, dan konsisten membantu rekan.' },
-      { key: 'C', text: 'Memastikan pesanan dan transaksi tetap akurat tanpa ada kesalahan nota.' }
+      { key: 'D', text: 'Mengambil kendali alur kerja dan mengeksekusi tindakan secepat mungkin.' },
+      { key: 'I', text: 'Membangun optimisme rekan tim atau menyapa prospek dengan ramah.' },
+      { key: 'S', text: 'Bekerja dengan ritme stabil, tidak panik, dan konsisten membantu tim.' },
+      { key: 'C', text: 'Memverifikasi ulang dokumen, nota, dan checklist agar nol toleransi kesalahan.' }
     ]
   },
   {
     module: 'disc',
     moduleTitle: 'Modul 1: Gaya Kerja & Komunikasi (DISC)',
     moduleBadge: 'Modul 1 (DISC)',
-    instruction: 'Dalam situasi perbedaan pendapat dengan rekan kerja saat bertugas:',
+    instruction: 'Dalam situasi perbedaan pendapat dengan rekan kerja atau tim cabang:',
     options: [
-      { key: 'D', text: 'Menyampaikan langsung to-the-point dan mencari solusi tercepat.' },
-      { key: 'I', text: 'Mencairkan suasana dengan komunikasi santai agar tidak tegang.' },
-      { key: 'S', text: 'Mendengarkan semua pihak dengan sabar demi keharmonisan tim.' },
-      { key: 'C', text: 'Mengacu pada aturan baku dan SOP resmi yang berlaku.' }
+      { key: 'D', text: 'Menyampaikan langsung to-the-point dan fokus pada solusi tercepat.' },
+      { key: 'I', text: 'Mencairkan suasana dengan komunikasi diplomatis agar tidak tegang.' },
+      { key: 'S', text: 'Mendengarkan semua pihak dengan sabar demi keharmonisan bersama.' },
+      { key: 'C', text: 'Mengacu pada aturan baku, SOP perusahaan, dan bukti data tertulis.' }
     ]
   },
   {
     module: 'disc',
     moduleTitle: 'Modul 1: Gaya Kerja & Komunikasi (DISC)',
     moduleBadge: 'Modul 1 (DISC)',
-    instruction: 'Hal yang membuat Anda merasa paling puas setelah shift kerja selesai:',
+    instruction: 'Hal yang membuat Anda merasa paling puas setelah bekerja seharian:',
     options: [
-      { key: 'D', text: 'Target omzet dan kecepatan pelayanan mencapai rekor tertinggi.' },
-      { key: 'I', text: 'Banyak pelanggan tersenyum puas dan memuji keramahan pelayanan.' },
-      { key: 'S', text: 'Seluruh shift berlangsung damai, lancar, dan tanpa kendala.' },
-      { key: 'C', text: 'Laporan kasir, rekonsiliasi uang, dan kebersihan outlet 100% sempurna.' }
+      { key: 'D', text: 'Target omzet closing, KPI cabang, atau volume kerja terlampaui maksimal.' },
+      { key: 'I', text: 'Banyak konsumen/klien puas dan suasana kerja tim menyenangkan.' },
+      { key: 'S', text: 'Seluruh operasional harian berlangsung aman, lancar, dan tanpa kendala.' },
+      { key: 'C', text: 'Laporan keuangan, stok barang, atau berkas KPR 100% rapi dan cocok.' }
     ]
   },
   {
@@ -78,10 +78,10 @@ const BASE_QUESTIONS = [
     moduleBadge: 'Modul 1 (DISC)',
     instruction: 'Hal yang paling membuat Anda kurang nyaman saat bekerja:',
     options: [
-      { key: 'D', text: 'Rekan kerja yang lamban dan ragu-ragu mengambil tindakan.' },
-      { key: 'I', text: 'Suasana kerja yang kaku, dingin, dan tidak boleh berbicara ramah.' },
-      { key: 'S', text: 'Perubahan jadwal mendadak tanpa pemberitahuan yang jelas.' },
-      { key: 'C', text: 'Area kerja yang berantakan dan mengabaikan standar kebersihan/SOP.' }
+      { key: 'D', text: 'Ritme kerja yang lambat dan keraguan bertele-tele dalam bertindak.' },
+      { key: 'I', text: 'Suasana kerja kaku, monoton, dan tidak ada ruang komunikasi terbuka.' },
+      { key: 'S', text: 'Perubahan instruksi atau jadwal mendadak tanpa koordinasi jelas.' },
+      { key: 'C', text: 'Pekerjaan yang berantakan dan mengabaikan standar kualitas / SOP.' }
     ]
   },
   {
@@ -90,38 +90,38 @@ const BASE_QUESTIONS = [
     moduleBadge: 'Modul 1 (DISC)',
     instruction: 'Bagaimana rekan kerja biasanya menilai kepribadian Anda:',
     options: [
-      { key: 'D', text: 'Percaya diri, lugas, dan berani memimpin.' },
-      { key: 'I', text: 'Hangat, ceria, ramah, dan pandai mencairkan suasana.' },
+      { key: 'D', text: 'Percaya diri, lugas, tegas, dan berani memimpin.' },
+      { key: 'I', text: 'Hangat, ceria, komunikatif, dan pandai mencairkan suasana.' },
       { key: 'S', text: 'Sabar, setia kawan, dan dapat diandalkan saat situasi sulit.' },
-      { key: 'C', text: 'Rapi, disiplin tinggi, dan sangat teliti menjaga detail.' }
+      { key: 'C', text: 'Rapi, disiplin tinggi, dan sangat teliti menjaga detail pekerjaan.' }
     ]
   },
   {
     module: 'disc',
     moduleTitle: 'Modul 1: Gaya Kerja & Komunikasi (DISC)',
     moduleBadge: 'Modul 1 (DISC)',
-    instruction: 'Sikap Anda saat menerima komplain atau keluhan dari orang lain:',
+    instruction: 'Sikap Anda saat menerima komplain dari konsumen atau kendala operasional:',
     options: [
-      { key: 'D', text: 'Segera memberikan solusi penggantian tanpa banyak berdebat.' },
-      { key: 'I', text: 'Meminta maaf dengan tulus dan mendengarkan dengan penuh perhatian.' },
+      { key: 'D', text: 'Segera memberikan solusi praktis dan mengambil langkah penggantian cepat.' },
+      { key: 'I', text: 'Meminta maaf dengan tulus dan mendengarkan keluhan dengan empati.' },
       { key: 'S', text: 'Tetap tenang, tidak terpancing emosi, dan meredakan situasi.' },
-      { key: 'C', text: 'Mengecek bukti kronologi dan mencocokkan dengan prosedur resmi.' }
+      { key: 'C', text: 'Mengecek data transaksi / bukti fisik dan memproses sesuai prosedur resmi.' }
     ]
   },
   {
     module: 'disc',
     moduleTitle: 'Modul 1: Gaya Kerja & Komunikasi (DISC)',
     moduleBadge: 'Modul 1 (DISC)',
-    instruction: 'Gaya Anda saat menyelesaikan tugas persiapan outlet (opening/closing):',
+    instruction: 'Gaya Anda saat menyelesaikan tugas persiapan harian atau opening/closing:',
     options: [
-      { key: 'D', text: 'Membagi tugas dengan cepat dan memastikan selesai tepat waktu.' },
-      { key: 'I', text: 'Mengerjakan tugas sambil menyemangati rekan agar suasana tetap seru.' },
-      { key: 'S', text: 'Menuntaskan bagian tugas saya dengan telaten dari awal sampai akhir.' },
-      { key: 'C', text: 'Memeriksa kebersihan detail sudut outlet dan checklist barang teliti.' }
+      { key: 'D', text: 'Membagi tugas dengan cepat dan memastikan target selesai tepat waktu.' },
+      { key: 'I', text: 'Mengerjakan tugas sambil menyemangati tim agar tidak terasa jenuh.' },
+      { key: 'S', text: 'Menuntaskan bagian tugas saya dengan telaten dari awal hingga tuntas.' },
+      { key: 'C', text: 'Memeriksa detail kebersihan sudut area kerja dan checklist kelengkapan barang.' }
     ]
   },
 
-  // --- MBTI (8 Soal) ---
+  // --- MODUL 2: MBTI (8 Soal Kepribadian) ---
   {
     module: 'mbti',
     dim: 'EI',
@@ -129,8 +129,8 @@ const BASE_QUESTIONS = [
     moduleBadge: 'Modul 2 (MBTI)',
     instruction: 'Pilih pernyataan yang paling mencerminkan cara Anda mengisi ulang energi:',
     options: [
-      { key: 'E', text: 'Saya merasa segar dan bersemangat saat bertemu dan berinteraksi dengan banyak orang.' },
-      { key: 'I', text: 'Saya merasa lebih fokus dan tenang saat memiliki waktu sendiri untuk istirahat.' }
+      { key: 'E', text: 'Saya merasa segar dan bersemangat saat bertemu dan berinteraksi aktif dengan banyak orang.' },
+      { key: 'I', text: 'Saya merasa lebih fokus dan tenang saat memiliki ruang mandiri untuk konsentrasi.' }
     ]
   },
   {
@@ -138,10 +138,10 @@ const BASE_QUESTIONS = [
     dim: 'EI',
     moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
     moduleBadge: 'Modul 2 (MBTI)',
-    instruction: 'Saat bertugas melayani pelanggan baru:',
+    instruction: 'Saat bertugas melayani calon pembeli atau pelanggan baru:',
     options: [
-      { key: 'E', text: 'Spontan menyapa, tersenyum, dan percaya diri menawarkan menu andalan.' },
-      { key: 'I', text: 'Menunggu pelanggan mendekat, lalu merespon dengan sopan dan tenang.' }
+      { key: 'E', text: 'Spontan menyapa, tersenyum, dan percaya diri membuka percakapan penawaran.' },
+      { key: 'I', text: 'Menunggu pelanggan bertanya terlebih dahulu, lalu merespon dengan sopan dan jelas.' }
     ]
   },
   {
@@ -149,10 +149,10 @@ const BASE_QUESTIONS = [
     dim: 'SN',
     moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
     moduleBadge: 'Modul 2 (MBTI)',
-    instruction: 'Pilih bagaimana Anda mempelajari prosedur atau resep kerja baru:',
+    instruction: 'Pilih bagaimana Anda mempelajari alur kerja atau prosedur baru:',
     options: [
-      { key: 'S', text: 'Melihat contoh langsung, praktek langkah demi langkah sesuai takaran nyata.' },
-      { key: 'N', text: 'Memahami konsep dasar dan gambaran besarnya terlebih dahulu.' }
+      { key: 'S', text: 'Melihat contoh langsung, praktek langkah demi langkah sesuai fakta di lapangan.' },
+      { key: 'N', text: 'Memahami konsep dasar, visi tujuan, dan gambaran besarnya terlebih dahulu.' }
     ]
   },
   {
@@ -160,10 +160,10 @@ const BASE_QUESTIONS = [
     dim: 'SN',
     moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
     moduleBadge: 'Modul 2 (MBTI)',
-    instruction: 'Fokus perhatian Anda dalam bekerja sehari-hari:',
+    instruction: 'Fokus perhatian utama Anda dalam bekerja harian:',
     options: [
-      { key: 'S', text: 'Detail fisik di depan mata (kebersihan meja, stok display, ketersediaan alat).' },
-      { key: 'N', text: 'Ide-ide baru untuk meningkatkan daya tarik tempat kerja di masa depan.' }
+      { key: 'S', text: 'Detail fisik nyata (ketersediaan stok, kelengkapan berkas, kebersihan area kerja).' },
+      { key: 'N', text: 'Ide-ide baru, inovasi promosi, dan strategi pengembangan ke depan.' }
     ]
   },
   {
@@ -171,10 +171,10 @@ const BASE_QUESTIONS = [
     dim: 'TF',
     moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
     moduleBadge: 'Modul 2 (MBTI)',
-    instruction: 'Prinsip utama Anda dalam mengambil keputusan kerja:',
+    instruction: 'Prinsip utama Anda dalam mengambil keputusan kerja yang sulit:',
     options: [
-      { key: 'T', text: 'Berdasarkan aturan logika objektif, efisiensi waktu, dan keadilan.' },
-      { key: 'F', text: 'Berdasarkan rasa empati, kenyamanan rekan kerja, dan kepuasan hati pelanggan.' }
+      { key: 'T', text: 'Berdasarkan aturan logika objektif, efisiensi waktu, data angka, dan keadilan.' },
+      { key: 'F', text: 'Berdasarkan rasa empati, kenyamanan hubungan tim, dan kepuasan konsumen.' }
     ]
   },
   {
@@ -182,10 +182,10 @@ const BASE_QUESTIONS = [
     dim: 'TF',
     moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
     moduleBadge: 'Modul 2 (MBTI)',
-    instruction: 'Ketika rekan kerja melakukan kesalahan kecil dalam pelayanan:',
+    instruction: 'Ketika rekan kerja melakukan kesalahan kecil dalam bertugas:',
     options: [
-      { key: 'T', text: 'Langsung mengoreksi kesalahannya agar kualitas kerja tetap terjaga.' },
-      { key: 'F', text: 'Memberitahu secara halus dan privat agar rekan kerja tidak merasa malu.' }
+      { key: 'T', text: 'Langsung mengoreksi kesalahannya secara to-the-point agar kualitas kerja terjaga.' },
+      { key: 'F', text: 'Memberitahu secara halus dan personal agar rekan kerja tidak merasa minder.' }
     ]
   },
   {
@@ -193,9 +193,9 @@ const BASE_QUESTIONS = [
     dim: 'JP',
     moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
     moduleBadge: 'Modul 2 (MBTI)',
-    instruction: 'Bagaimana Anda mengatur barang-barang di area kerja / kasir:',
+    instruction: 'Bagaimana Anda mengatur berkas, file, atau perlengkapan kerja Anda:',
     options: [
-      { key: 'J', text: 'Selalu meletakkan kembali barang pada tempat resminya agar rapi dan teratur.' },
+      { key: 'J', text: 'Selalu meletakkan kembali barang pada tempat resminya agar terstruktur dan rapi.' },
       { key: 'P', text: 'Menaruh di tempat yang mudah dijangkau saat itu juga agar fleksibel dan cepat.' }
     ]
   },
@@ -204,75 +204,129 @@ const BASE_QUESTIONS = [
     dim: 'JP',
     moduleTitle: 'Modul 2: Preferensi Kepribadian (MBTI)',
     moduleBadge: 'Modul 2 (MBTI)',
-    instruction: 'Respon Anda terhadap aturan atau prosedur operasional baku (SOP):',
+    instruction: 'Respon Anda terhadap jadwal kerja atau prosedur operasional baku (SOP):',
     options: [
-      { key: 'J', text: 'Merasa nyaman karena ada kepastian dan panduan kerja yang jelas untuk diikuti.' },
-      { key: 'P', text: 'Lebih suka jika diberikan ruang kebebasan sesuai gaya kerja sendiri.' }
+      { key: 'J', text: 'Merasa nyaman karena ada kepastian aturan dan panduan kerja yang jelas.' },
+      { key: 'P', text: 'Lebih menyukai kebebasan berimprovisasi sesuai dinamika situasi lapangan.' }
+    ]
+  },
+
+  // --- MODUL 3: IQ & PENALARAN KOGNITIF (6 Soal Wajib Semua Posisi) ---
+  {
+    module: 'iq',
+    moduleTitle: 'Modul 3: Logika & Kemampuan Kognitif (IQ)',
+    moduleBadge: 'Modul 3 (IQ)',
+    instruction: 'Silogisme Logika: Semua bahan makanan beku harus disimpan di freezer. Semua daging ayam adalah bahan makanan beku. Kesimpulan yang PASTI BENAR:',
+    correct: 'B',
+    options: [
+      { key: 'A', text: 'Semua yang disimpan di freezer adalah daging ayam.' },
+      { key: 'B', text: 'Semua daging ayam harus disimpan di freezer.' },
+      { key: 'C', text: 'Sebagian bahan makanan beku tidak perlu freezer.' },
+      { key: 'D', text: 'Freezer hanya digunakan untuk daging ayam.' }
+    ]
+  },
+  {
+    module: 'iq',
+    moduleTitle: 'Modul 3: Logika & Kemampuan Kognitif (IQ)',
+    moduleBadge: 'Modul 3 (IQ)',
+    instruction: 'Pola Deret Angka: Tentukan angka selanjutnya: 4, 8, 16, 32, ?',
+    correct: 'C',
+    options: [
+      { key: 'A', text: '48' },
+      { key: 'B', text: '56' },
+      { key: 'C', text: '64 (Pola perkalian 2: 32 x 2 = 64)' },
+      { key: 'D', text: '72' }
+    ]
+  },
+  {
+    module: 'iq',
+    moduleTitle: 'Modul 3: Logika & Kemampuan Kognitif (IQ)',
+    moduleBadge: 'Modul 3 (IQ)',
+    instruction: 'Analogi Kata: PROYEK : SITE PLAN = RESTORAN : ?',
+    correct: 'A',
+    options: [
+      { key: 'A', text: 'BUKU MENU' },
+      { key: 'B', text: 'KASIR' },
+      { key: 'C', text: 'DAPUR' },
+      { key: 'D', text: 'MEJA' }
+    ]
+  },
+  {
+    module: 'iq',
+    moduleTitle: 'Modul 3: Logika & Kemampuan Kognitif (IQ)',
+    moduleBadge: 'Modul 3 (IQ)',
+    instruction: 'Deret Selisih: Tentukan angka berikutnya: 5, 9, 14, 20, 27, ?',
+    correct: 'B',
+    options: [
+      { key: 'A', text: '34' },
+      { key: 'B', text: '35 (Pola bertingkat: +4, +5, +6, +7, +8 -> 27 + 8 = 35)' },
+      { key: 'C', text: '36' },
+      { key: 'D', text: '37' }
+    ]
+  },
+  {
+    module: 'iq',
+    moduleTitle: 'Modul 3: Logika & Kemampuan Kognitif (IQ)',
+    moduleBadge: 'Modul 3 (IQ)',
+    instruction: 'Logika Waktu Operasional: Cabang outlet buka pukul 09.30 dan tutup pukul 21.45. Berapa lama cabang tersebut beroperasi dalam sehari?',
+    correct: 'C',
+    options: [
+      { key: 'A', text: '11 Jam 45 Menit' },
+      { key: 'B', text: '12 Jam' },
+      { key: 'C', text: '12 Jam 15 Menit' },
+      { key: 'D', text: '12 Jam 30 Menit' }
+    ]
+  },
+  {
+    module: 'iq',
+    moduleTitle: 'Modul 3: Logika & Kemampuan Kognitif (IQ)',
+    moduleBadge: 'Modul 3 (IQ)',
+    instruction: 'Penalaran Deduksi: Bahan A lebih berat dari Bahan B. Bahan C lebih berat dari Bahan A. Maka kesimpulannya:',
+    correct: 'A',
+    options: [
+      { key: 'A', text: 'Bahan C adalah bahan yang paling berat di antara ketiganya.' },
+      { key: 'B', text: 'Bahan B adalah bahan yang paling berat.' },
+      { key: 'C', text: 'Bahan A adalah bahan yang paling berat.' },
+      { key: 'D', text: 'Semua bahan memiliki bobot yang sama.' }
     ]
   }
 ];
 
 // =========================================================================
-// 2. BANK SOAL KHUSUS CREW OUTLET (PELAYANAN CS & BERHITUNG KASIR)
+// 2. MODUL KHUSUS SALES OUTLET / CREW OUTLET (Corner Kebab & Dagos Steak)
 // =========================================================================
-const CREW_OUTLET_QUESTIONS = [
+const OUTLET_QUESTIONS = [
   {
     module: 'outlet_service',
-    moduleTitle: 'Modul Khusus 3A: Pelayanan Pelanggan & Hospitality Outlet',
-    moduleBadge: 'Tes Khusus Hospitality Outlet',
-    instruction: 'Skenario Komplain Pesanan Salah: Pelanggan mendatangi kasir dengan nada marah karena saus makanannya tidak sesuai pesanan. Respon terbaik yang wajib Anda lakukan:',
+    moduleTitle: 'Modul 4: Uji Pelayanan Hospitality & Kasir Outlet',
+    moduleBadge: 'Uji Kasir & Hospitality Outlet',
+    instruction: 'Skenario Komplain Pesanan: Pelanggan mendatangi kasir dengan nada marah karena pesanan tidak sesuai nota. Tindakan terbaik yang wajib Anda lakukan:',
     correct: 'B',
     options: [
-      { key: 'A', text: 'Menjelaskan bahwa tadi pelanggan salah sebut saat memesan di kasir.' },
-      { key: 'B', text: 'Tersenyum sopan, tulus meminta maaf atas ketidaknyamanan, dan segera mengganti menu dengan yang benar tanpa berdebat.' },
-      { key: 'C', text: 'Menyuruh pelanggan menunggu dan memanggil manager outlet untuk mengurusnya.' },
-      { key: 'D', text: 'Diam saja dan membuatkan saus baru dengan wajah datar.' }
+      { key: 'A', text: 'Menjelaskan bahwa tadi pelanggan yang salah sebut saat memesan di kasir.' },
+      { key: 'B', text: 'Tersenyum sopan, tulus meminta maaf atas ketidaknyamanan, dan segera mengganti menu yang benar tanpa berdebat.' },
+      { key: 'C', text: 'Menyuruh pelanggan menunggu lama dan memanggil atasan untuk berdebat.' },
+      { key: 'D', text: 'Diam saja dan membuatkan pesanan baru dengan ekspresi kesal.' }
     ]
   },
   {
     module: 'outlet_service',
-    moduleTitle: 'Modul Khusus 3A: Pelayanan Pelanggan & Hospitality Outlet',
-    moduleBadge: 'Tes Khusus Hospitality Outlet',
-    instruction: 'Inisiatif Upselling / Penawaran Promo: Saat pelanggan memesan 1 makanan utama, teknik komunikasi paling ramah dan efektif untuk menawarkan menu tambahan (upsell) adalah:',
+    moduleTitle: 'Modul 4: Uji Pelayanan Hospitality & Kasir Outlet',
+    moduleBadge: 'Uji Kasir & Hospitality Outlet',
+    instruction: 'Inisiatif Upselling Menu: Saat pembeli memesan 1 menu kebab/steak, cara menawarkan menu tambahan yang paling ramah dan efektif adalah:',
     correct: 'C',
     options: [
-      { key: 'A', text: 'Langsung menambahkan minuman mahal ke nota tanpa bertanya.' },
-      { key: 'B', text: 'Tidak perlu menawarkan apapun agar transaksi cepat selesai.' },
+      { key: 'A', text: 'Langsung menambahkan minuman ke struk pembayaran tanpa bertanya.' },
+      { key: 'B', text: 'Tidak perlu menawarkan apa-apa agar transaksi cepat selesai.' },
       { key: 'C', text: '"Baik Kak, untuk minumannya mau sekalian coba Es Jeruk Segar kami? Hari ini sedang ada promo tambah Rp5.000 saja Kak."' },
-      { key: 'D', text: '"Kakak harus beli minumnya juga ya, soalnya menu ini pedas."' }
-    ]
-  },
-  {
-    module: 'outlet_service',
-    moduleTitle: 'Modul Khusus 3A: Pelayanan Pelanggan & Hospitality Outlet',
-    moduleBadge: 'Tes Khusus Hospitality Outlet',
-    instruction: 'Kerapian & Kebersihan Outlet (Cleanliness): Saat melihat meja pelanggan yang baru saja selesai makan dan meninggalkan remah makanan, tindakan Anda saat outlet sedang senggang adalah:',
-    correct: 'A',
-    options: [
-      { key: 'A', text: 'Segera membawa lap bersih dan sanitizer untuk membersihkan meja agar siap digunakan pelanggan berikutnya.' },
-      { key: 'B', text: 'Menunggu sampai ada pelanggan baru yang meminta meja tersebut dibersihkan.' },
-      { key: 'C', text: 'Membiarkannya karena itu adalah tugas shift cleaning di akhir jam kerja.' },
-      { key: 'D', text: 'Duduk beristirahat sambil bermain handphone.' }
-    ]
-  },
-  {
-    module: 'outlet_service',
-    moduleTitle: 'Modul Khusus 3A: Pelayanan Pelanggan & Hospitality Outlet',
-    moduleBadge: 'Tes Khusus Hospitality Outlet',
-    instruction: 'Handling Antrean Panjang: Antrean pemesanan mencapai 10 orang dan proses memasak butuh waktu 8 menit. Bagaimana Anda mengomunikasikan estimasi waktu ke pelanggan?',
-    correct: 'B',
-    options: [
-      { key: 'A', text: 'Mengatakan makanan akan siap dalam 1 menit agar pelanggan tidak pergi.' },
-      { key: 'B', text: 'Menginformasikan dengan ramah sejak awal: "Mohon maaf Kak, saat ini antrean sedang ramai, estimasi penyajian sekitar 8-10 menit ya Kak, mohon kesediaannya menunggu."' },
-      { key: 'C', text: 'Tidak perlu menginfokan apapun, biarkan pelanggan menunggu sendiri.' },
-      { key: 'D', text: 'Menolak pelanggan berikutnya karena dapur sudah terlalu sibuk.' }
+      { key: 'D', text: '"Kakak harus beli minumnya juga ya, karena menunya pedas."' }
     ]
   },
   {
     module: 'outlet_cashier',
-    moduleTitle: 'Modul Khusus 3B: Tes Berhitung Cepat Kasir Outlet',
-    moduleBadge: 'Tes Khusus Berhitung Kasir',
-    instruction: 'Hitung Uang Kembalian: Pembeli memesan 2 porsi makanan seharga total Rp46.500. Pembeli membayar dengan uang pecahan Rp100.000. Berapa uang kembalian yang harus Anda serahkan?',
+    moduleTitle: 'Modul 4: Uji Pelayanan Hospitality & Kasir Outlet',
+    moduleBadge: 'Uji Kasir & Hospitality Outlet',
+    instruction: 'Hitung Uang Kembalian: Pembeli memesan makanan seharga total Rp46.500 dan membayar dengan uang tunai Rp100.000. Berapa uang kembalian yang harus diserahkan?',
     correct: 'B',
     options: [
       { key: 'A', text: 'Rp54.500' },
@@ -283,9 +337,9 @@ const CREW_OUTLET_QUESTIONS = [
   },
   {
     module: 'outlet_cashier',
-    moduleTitle: 'Modul Khusus 3B: Tes Berhitung Cepat Kasir Outlet',
-    moduleBadge: 'Tes Khusus Berhitung Kasir',
-    instruction: 'Hitung Diskon Promo: Menu Paket Family seharga Rp150.000 mendapat potongan diskon promo 20%. Berapa harga yang harus dibayar pelanggan?',
+    moduleTitle: 'Modul 4: Uji Pelayanan Hospitality & Kasir Outlet',
+    moduleBadge: 'Uji Kasir & Hospitality Outlet',
+    instruction: 'Hitung Diskon Promo: Paket Hemat seharga Rp150.000 mendapatkan potongan promo 20%. Berapa total nominal yang harus dibayar pelanggan?',
     correct: 'A',
     options: [
       { key: 'A', text: 'Rp120.000 (Diskon 20% x 150rb = 30rb -> 150rb - 30rb = 120rb)' },
@@ -293,44 +347,18 @@ const CREW_OUTLET_QUESTIONS = [
       { key: 'C', text: 'Rp125.000' },
       { key: 'D', text: 'Rp115.000' }
     ]
-  },
-  {
-    module: 'outlet_cashier',
-    moduleTitle: 'Modul Khusus 3B: Tes Berhitung Cepat Kasir Outlet',
-    moduleBadge: 'Tes Khusus Berhitung Kasir',
-    instruction: 'Perhitungan Uang Pecahan Kasir (Cash Count): Di laci kasir terdapat: 7 lembar uang Rp50.000, 12 lembar Rp20.000, dan 15 lembar Rp10.000. Berapa total nominal uang tersebut?',
-    correct: 'D',
-    options: [
-      { key: 'A', text: 'Rp680.000' },
-      { key: 'B', text: 'Rp710.000' },
-      { key: 'C', text: 'Rp720.000' },
-      { key: 'D', text: 'Rp740.000 (350rb + 240rb + 150rb = Rp740.000)' }
-    ]
-  },
-  {
-    module: 'outlet_cashier',
-    moduleTitle: 'Modul Khusus 3B: Tes Berhitung Cepat Kasir Outlet',
-    moduleBadge: 'Tes Khusus Berhitung Kasir',
-    instruction: 'Promo Beli 2 Gratis 1: Harga normal 1 porsi menu adalah Rp18.000. Sedang ada promo "Beli 2 Gratis 1". Jika seorang pembeli membawa pulang 6 porsi, berapa total uang yang harus ia bayar?',
-    correct: 'C',
-    options: [
-      { key: 'A', text: 'Rp54.000' },
-      { key: 'B', text: 'Rp64.000' },
-      { key: 'C', text: 'Rp72.000 (Hanya bayar 4 porsi: 4 x 18.000 = Rp72.000, 2 porsi gratis)' },
-      { key: 'D', text: 'Rp90.000' }
-    ]
   }
 ];
 
 // =========================================================================
-// 3. BANK SOAL KHUSUS DIGITAL MARKETING (8 SOAL)
+// 3. MODUL KHUSUS MARKETING STRATEGIC & ONLINE SALES
 // =========================================================================
-const DIGITAL_MARKETING_QUESTIONS = [
+const MARKETING_QUESTIONS = [
   {
     module: 'marketing',
-    moduleTitle: 'Modul Khusus: Digital Marketing & Creative Strategy',
-    moduleBadge: 'Tes Khusus Digital Marketing',
-    instruction: 'Analisis Metrik Ads: Iklan Meta/TikTok Ads memiliki Impressions 10.000 kali dan Link Clicks sebanyak 300 kali. Berapakah nilai Click-Through Rate (CTR) iklan tersebut?',
+    moduleTitle: 'Modul 4: Uji Strategi Digital Marketing & Ads',
+    moduleBadge: 'Uji Digital Marketing',
+    instruction: 'Analisis Metrik Iklan: Iklan Meta Ads properti/F&B Anda mendapatkan Impressions 10.000 kali dan Link Clicks sebanyak 300 kali. Berapakah nilai Click-Through Rate (CTR)?',
     correct: 'B',
     options: [
       { key: 'A', text: '0.3%' },
@@ -341,22 +369,22 @@ const DIGITAL_MARKETING_QUESTIONS = [
   },
   {
     module: 'marketing',
-    moduleTitle: 'Modul Khusus: Digital Marketing & Creative Strategy',
-    moduleBadge: 'Tes Khusus Digital Marketing',
-    instruction: 'Formula Copywriting: Dalam formula AIDA (Attention, Interest, Desire, Action), bagian manakah yang berfungsi sebagai "Hook" 3 detik pertama pada video reels/TikTok?',
+    moduleTitle: 'Modul 4: Uji Strategi Digital Marketing & Ads',
+    moduleBadge: 'Uji Digital Marketing',
+    instruction: 'Formula Copywriting: Dalam formula AIDA (Attention, Interest, Desire, Action), elemen manakah yang bertindak sebagai "Hook" 3 detik awal pada video promosi?',
     correct: 'A',
     options: [
       { key: 'A', text: 'Attention (Menangkap fokus audiens agar berhenti scrolling)' },
       { key: 'B', text: 'Interest (Menjelaskan fitur produk secara detail)' },
-      { key: 'C', text: 'Desire (Memberikan testimoni dan diskon)' },
-      { key: 'D', text: 'Action (Mengajak klik link di bio)' }
+      { key: 'C', text: 'Desire (Memberikan testimoni dan promo diskon)' },
+      { key: 'D', text: 'Action (Mengajak klik tombol WhatsApp di bio)' }
     ]
   },
   {
     module: 'marketing',
-    moduleTitle: 'Modul Khusus: Digital Marketing & Creative Strategy',
-    moduleBadge: 'Tes Khusus Digital Marketing',
-    instruction: 'Evaluasi ROAS (Return on Ad Spend): Biaya iklan yang dikeluarkan adalah Rp2.000.000 dan menghasilkan omzet penjualan langsung sebesar Rp8.000.000. Berapa nilai ROAS kampanye tersebut?',
+    moduleTitle: 'Modul 4: Uji Strategi Digital Marketing & Ads',
+    moduleBadge: 'Uji Digital Marketing',
+    instruction: 'Evaluasi ROAS: Biaya iklan yang dikeluarkan adalah Rp2.000.000 dan menghasilkan omzet penjualan langsung sebesar Rp8.000.000. Berapa nilai ROAS kampanye tersebut?',
     correct: 'C',
     options: [
       { key: 'A', text: '2x' },
@@ -367,99 +395,47 @@ const DIGITAL_MARKETING_QUESTIONS = [
   },
   {
     module: 'marketing',
-    moduleTitle: 'Modul Khusus: Digital Marketing & Creative Strategy',
-    moduleBadge: 'Tes Khusus Digital Marketing',
-    instruction: 'Kreativitas Judul (Hook Angle): Manakah judul konten video kuliner yang paling memiliki potensi Click-Through Rate (CTR) & retensi tinggi di media sosial?',
+    moduleTitle: 'Modul 4: Uji Strategi Digital Marketing & Ads',
+    moduleBadge: 'Uji Digital Marketing',
+    instruction: 'Kreativitas Judul (Hook Angle): Manakah judul konten yang memiliki potensi Click-Through Rate (CTR) tertinggi untuk promosi perumahan/properti?',
     correct: 'C',
     options: [
-      { key: 'A', text: 'Menu Makanan Enak dan Murah Tersedia di Restoran Kami Hari Ini' },
-      { key: 'B', text: 'Informasi Jam Buka dan Lokasi Cabang Baru Kami' },
-      { key: 'C', text: 'Jangan Beli Menu Ini Kalau Nggak Mau Ketagihan! Rahasia Sambal yang Bikin Antre 2 Jam' },
-      { key: 'D', text: 'Kunjungi Restoran Kami untuk Mendapatkan Diskon Menarik' }
-    ]
-  },
-  {
-    module: 'marketing',
-    moduleTitle: 'Modul Khusus: Digital Marketing & Creative Strategy',
-    moduleBadge: 'Tes Khusus Digital Marketing',
-    instruction: 'Strategi Funnel Marketing: Konten tipe "Top of Funnel" (TOFU) paling efektif bertujuan untuk apa?',
-    correct: 'A',
-    options: [
-      { key: 'A', text: 'Brand Awareness & Menjangkau audiens baru yang belum kenal produk' },
-      { key: 'B', text: 'Hard Selling langsung meminta transfer rekening' },
-      { key: 'C', text: 'Customer Retention untuk pelanggan lama' },
-      { key: 'D', text: 'Klaim garansi dan layanan pelanggan' }
-    ]
-  },
-  {
-    module: 'marketing',
-    moduleTitle: 'Modul Khusus: Digital Marketing & Creative Strategy',
-    moduleBadge: 'Tes Khusus Digital Marketing',
-    instruction: 'Optimasi Retensi Video: Jika grafik retensi video TikTok Anda mengalami penurunan tajam (drop) di detik ke-3, perbaikan kreatif apa yang paling krusial dilakukan?',
-    correct: 'B',
-    options: [
-      { key: 'A', text: 'Mengubah Call-to-Action (CTA) di bagian akhir video' },
-      { key: 'B', text: 'Mengganti visual hook 3 detik awal dengan pergerakan cepat, teks kontras, atau pertanyaan provokatif' },
-      { key: 'C', text: 'Memperpanjang durasi video menjadi 5 menit' },
-      { key: 'D', text: 'Menghapus deskripsi caption video' }
-    ]
-  },
-  {
-    module: 'marketing',
-    moduleTitle: 'Modul Khusus: Digital Marketing & Creative Strategy',
-    moduleBadge: 'Tes Khusus Digital Marketing',
-    instruction: 'A/B Testing Kreatif: Saat menjalankan A/B testing iklan berbayar, aturan paling baku agar hasil pengujian valid adalah:',
-    correct: 'A',
-    options: [
-      { key: 'A', text: 'Hanya mengubah 1 variabel kreatif (misal: hanya beda Thumbnail atau Hook) dengan target audiens & budget yang sama' },
-      { key: 'B', text: 'Mengubah semua copy, video, audiens, dan budget sekaligus bersamaan' },
-      { key: 'C', text: 'Menjalankan iklan hanya selama 1 jam saja' },
-      { key: 'D', text: 'Memilih pemenang hanya berdasarkan jumlah likes bukan konversi' }
-    ]
-  },
-  {
-    module: 'marketing',
-    moduleTitle: 'Modul Khusus: Digital Marketing & Creative Strategy',
-    moduleBadge: 'Tes Khusus Digital Marketing',
-    instruction: 'Pilar Konten (Content Pillar): Komposisi kalender konten media sosial brand bisnis yang sehat umumnya mengombinasikan:',
-    correct: 'D',
-    options: [
-      { key: 'A', text: '100% Promo jualan produk setiap hari tanpa konten edukasi' },
-      { key: 'B', text: '100% Konten meme lucu tanpa mengenalkan produk sama sekali' },
-      { key: 'C', text: 'Hanya repost berita viral luar negeri' },
-      { key: 'D', text: 'Edukasi / Solusi Masalah (40%), Hiburan / Relatable (30%), Bukti Sosial / Testimoni (20%), Promosi Penjualan (10%)' }
+      { key: 'A', text: 'Dijual Rumah Murah dan Nyaman di Lokasi Strategis' },
+      { key: 'B', text: 'Informasi Brosur dan Denah Rumah Tipe Terbaru' },
+      { key: 'C', text: 'Punya Gaji 5 Juta Tapi Mau Punya Rumah 2 Lantai Dekat Stasiun? Jangan Beli Sebelum Cek Ini!' },
+      { key: 'D', text: 'Hubungi Marketing Kami untuk Info Perumahan' }
     ]
   }
 ];
 
 // =========================================================================
-// 4. BANK SOAL POSISI UMUM / KOGNITIF IQ LAINNYA
+// 4. MODUL KHUSUS INHOUSE SALES (PROPERTI / PROJECT)
 // =========================================================================
-const GENERAL_COGNITIVE_QUESTIONS = [
+const INHOUSE_SALES_QUESTIONS = [
   {
-    module: 'iq',
-    moduleTitle: 'Modul 3: Logika & Kemampuan Kognitif (IQ)',
-    moduleBadge: 'Modul 3 (IQ)',
-    instruction: 'Silogisme Logika: Semua analis data menguasai statistik. Sebagian analis data menguasai Python. Manakah kesimpulan yang PASTI BENAR?',
+    module: 'property_sales',
+    moduleTitle: 'Modul 4: Uji Negosiasi & Closing Sales Properti',
+    moduleBadge: 'Uji Sales Properti',
+    instruction: 'Handling Keberatan Konsumen: Prospek berkata: "Lokasinya bagus, tapi cicilan per bulannya terasa agak berat buat saya." Respon closing terbaik Anda:',
     correct: 'B',
     options: [
-      { key: 'A', text: 'Semua yang menguasai Python pasti menguasai statistik.' },
-      { key: 'B', text: 'Sebagian yang menguasai statistik menguasai Python.' },
-      { key: 'C', text: 'Semua analis data menguasai Python dan statistik.' },
-      { key: 'D', text: 'Tidak ada analis data yang hanya menguasai statistik.' }
+      { key: 'A', text: 'Mengatakan bahwa kalau tidak sanggup cicil sebaiknya cari perumahan lain.' },
+      { key: 'B', text: 'Menggali budget riil konsumen, lalu memberikan opsi simulasi tenor KPR lebih panjang atau skema promo subsidi DP.' },
+      { key: 'C', text: 'Langsung membiarkan prospek pergi tanpa memberikan alternatif pembiayaan.' },
+      { key: 'D', text: 'Menyalahkan suku bunga bank yang sedang naik.' }
     ]
   },
   {
-    module: 'iq',
-    moduleTitle: 'Modul 3: Logika & Kemampuan Kognitif (IQ)',
-    moduleBadge: 'Modul 3 (IQ)',
-    instruction: 'Pola Deret Angka: Tentukan angka berikutnya: 3, 6, 11, 18, 27, ?',
-    correct: 'C',
+    module: 'property_sales',
+    moduleTitle: 'Modul 4: Uji Negosiasi & Closing Sales Properti',
+    moduleBadge: 'Uji Sales Properti',
+    instruction: 'Follow-Up Prospek: Setelah prospek melakukan kunjungan survei lokasi (site visit), waktu paling ideal untuk melakukan follow-up komitmen booking fee adalah:',
+    correct: 'A',
     options: [
-      { key: 'A', text: '35' },
-      { key: 'B', text: '36' },
-      { key: 'C', text: '38 (Pola: +3, +5, +7, +9, +11 -> 27 + 11 = 38)' },
-      { key: 'D', text: '40' }
+      { key: 'A', text: 'Dalam waktu 1x24 jam selagi emosi dan impresi positif terhadap unit masih hangat.' },
+      { key: 'B', text: 'Menunggu 1 bulan kemudian agar konsumen tidak merasa terganggu.' },
+      { key: 'C', text: 'Tidak perlu di-follow up sampai konsumen menelepon kembali.' },
+      { key: 'D', text: 'Menelepon setiap 30 menit terus-menerus.' }
     ]
   }
 ];
@@ -469,28 +445,41 @@ export default function Home() {
   const [db, setDb] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // HR & Cloud Config State
+  // HR Auth State
   const [isHrAuthenticated, setIsHrAuthenticated] = useState(false);
   const [hrPasswordInput, setHrPasswordInput] = useState('');
   const [loginError, setLoginError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [hrPinCode, setHrPinCode] = useState('admin123');
   
-  // Cloud & WhatsApp Sync Config
+  // Cloud & WhatsApp Sync
   const [hrWaNumber, setHrWaNumber] = useState('6281234567890');
   const [supabaseUrl, setSupabaseUrl] = useState('');
   const [supabaseKey, setSupabaseKey] = useState('');
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [isCloudLoading, setIsCloudLoading] = useState(false);
 
-  // Posisi Resmi
+  // DAFTAR POSISI LENGKAP SESUAI STRUKTUR ORGANISASI PERUSAHAAN
   const [positionsList, setPositionsList] = useState([
-    { title: 'Crew Outlet / Kasir / Server', dept: 'Outlet Operations' },
-    { title: 'Cook / Kitchen Crew', dept: 'Kitchen Operations' },
-    { title: 'Leader / Supervisor Outlet', dept: 'Outlet Operations' },
-    { title: 'Digital Marketing & Content Specialist', dept: 'Growth & Marketing' },
-    { title: 'Social Media & Creative Copywriter', dept: 'Creative & Branding' },
-    { title: 'Product Lead / Senior PM', dept: 'Product & Tech' }
+    // Marketing & Sales
+    { title: 'Marketing Strategic', dept: 'Marketing & Growth' },
+    { title: 'Online Sales / Digital Sales', dept: 'Marketing & Growth' },
+    { title: 'Sales Supervisor', dept: 'Sales Division' },
+    { title: 'Inhouse Sales (Properti)', dept: 'Property Sales' },
+    { title: 'Sales Outlet / Crew (Corner Kebab & Dagos)', dept: 'F&B Operations' },
+    
+    // Human Capital
+    { title: 'HC Supervisor', dept: 'Human Capital' },
+    { title: 'KPR & Recruitment Staff', dept: 'Human Capital' },
+    { title: 'General Affairs / Maintenance & Kebersihan', dept: 'General Affairs' },
+    
+    // Finance
+    { title: 'Finance Supervisor', dept: 'Finance & Accounting' },
+    { title: 'Finance & Accounting Staff', dept: 'Finance & Accounting' },
+    
+    // Operational & Logistics
+    { title: 'Operational Supervisor', dept: 'Operations & Logistics' },
+    { title: 'Operator / Admin Cabang', dept: 'Operations & Logistics' },
+    { title: 'Staff Gudang, Driver & TO', dept: 'Logistics & Supply' }
   ]);
 
   const [showAddPosModal, setShowAddPosModal] = useState(false);
@@ -502,8 +491,8 @@ export default function Home() {
     name: '',
     email: '',
     phone: '',
-    position: 'Crew Outlet / Kasir / Server',
-    dept: 'Outlet Operations'
+    position: 'Online Sales / Digital Sales',
+    dept: 'Marketing & Growth'
   });
 
   const [currentApplicant, setCurrentApplicant] = useState(null);
@@ -513,10 +502,10 @@ export default function Home() {
   const [timeLeft, setTimeLeft] = useState(1200);
   const [activeReport, setActiveReport] = useState(null);
 
-  // Load Saved Settings & Cloud Database
+  // Load Saved Database
   useEffect(() => {
     const savedPin = localStorage.getItem('tm_hr_pin');
-    const savedPos = localStorage.getItem('tm_custom_positions_v9');
+    const savedPos = localStorage.getItem('tm_company_positions_v1');
     const savedWa = localStorage.getItem('tm_hr_wa');
     const savedUrl = localStorage.getItem('tm_supabase_url');
     const savedKey = localStorage.getItem('tm_supabase_key');
@@ -529,18 +518,15 @@ export default function Home() {
       try { setPositionsList(JSON.parse(savedPos)); } catch (e) {}
     }
 
-    // Load Local/Cloud DB
     fetchApplicants(savedUrl, savedKey);
   }, []);
 
-  // Fetch dari Supabase jika ada, atau fallback ke LocalStorage
   const fetchApplicants = async (sUrl, sKey) => {
     const url = sUrl || supabaseUrl;
     const key = sKey || supabaseKey;
 
     if (url && key) {
       try {
-        setIsCloudLoading(true);
         const res = await fetch(`${url}/rest/v1/applicants?select=*&order=created_at.desc`, {
           headers: {
             'apikey': key,
@@ -549,7 +535,6 @@ export default function Home() {
         });
         if (res.ok) {
           const cloudData = await res.json();
-          // Transform dari format cloud
           const formatted = cloudData.map(item => ({
             id: item.token_id || item.id,
             name: item.name,
@@ -561,45 +546,38 @@ export default function Home() {
             date: item.test_date,
             disc: item.disc_summary,
             mbti: item.mbti_summary,
+            iq: item.iq_summary,
             outletScore: item.outlet_score,
             marketing: item.marketing_score,
+            propertySales: item.property_sales_score,
             match: item.match_score,
             status: item.recommendation_status
           }));
           setDb(formatted);
           localStorage.setItem('talentmatrix_persistent_db', JSON.stringify(formatted));
-          setIsCloudLoading(false);
           return;
         }
-      } catch (err) {
-        console.warn('Cloud sync error, using local fallback:', err);
-      }
-      setIsCloudLoading(false);
+      } catch (err) {}
     }
 
-    // Fallback LocalStorage
     const savedDb = localStorage.getItem('talentmatrix_persistent_db');
     if (savedDb) {
       try { setDb(JSON.parse(savedDb)); } catch (e) {}
     } else {
       const initialSeed = [
         {
-          id: 'APP-2026-CR01',
-          name: 'Siti Rahmawati',
-          email: 'siti.rahma@gmail.com',
+          id: 'APP-2026-SL01',
+          name: 'Khairul Anam',
+          email: 'khairul.sales@gmail.com',
           phone: '081298765432',
-          position: 'Crew Outlet / Kasir / Server',
-          dept: 'Outlet Operations',
-          roleType: 'crew_outlet',
+          position: 'Inhouse Sales (Properti)',
+          dept: 'Property Sales',
+          roleType: 'property_sales',
           date: '28 Ags 2026',
-          disc: { d: 55, i: 88, s: 78, c: 75, dom: 'I-S (Hospitality Leader)' },
-          mbti: { type: 'ESFJ', title: 'The Host / Provider', desc: 'Sangat ramah, cepat tanggap melayani komplain pelanggan, dan telaten menjaga kebersihan outlet.' },
-          outletScore: {
-            serviceScore: 100,
-            serviceCat: 'Sangat Ramah & Tanggap (Hospitality Star)',
-            cashierScore: 100,
-            cashierCat: '100% Akurat Tanpa Selisih'
-          },
+          disc: { d: 82, i: 88, s: 50, c: 65, dom: 'I-D (Top Closer)' },
+          mbti: { type: 'ENFP', title: 'The Campaigner', desc: 'Sangat komunikatif, persuasif, dan pandai membangun kedekatan dengan konsumen.' },
+          iq: { score: 120, cat: 'Superior', correct: 5, total: 6 },
+          propertySales: { score: 100, cat: 'Expert (High Negotiation & Closing)' },
           match: 97,
           status: 'STRONGLY RECOMMENDED'
         }
@@ -668,7 +646,6 @@ export default function Home() {
     }
   };
 
-  // Simpan Pengaturan Cloud & WA
   const handleSaveSettings = (e) => {
     e.preventDefault();
     localStorage.setItem('tm_hr_wa', hrWaNumber);
@@ -679,7 +656,6 @@ export default function Home() {
     fetchApplicants(supabaseUrl, supabaseKey);
   };
 
-  // Tambah & Hapus Posisi (HR)
   const handleAddNewPosition = (e) => {
     e.preventDefault();
     if (!newPosTitle.trim()) return;
@@ -689,7 +665,7 @@ export default function Home() {
     };
     const updated = [...positionsList, newPos];
     setPositionsList(updated);
-    localStorage.setItem('tm_custom_positions_v9', JSON.stringify(updated));
+    localStorage.setItem('tm_company_positions_v1', JSON.stringify(updated));
     setNewPosTitle('');
     setNewPosDept('');
     setShowAddPosModal(false);
@@ -704,7 +680,7 @@ export default function Home() {
     if (confirm(`Hapus posisi "${positionsList[idxToDelete].title}" dari daftar lowongan?`)) {
       const updated = positionsList.filter((_, idx) => idx !== idxToDelete);
       setPositionsList(updated);
-      localStorage.setItem('tm_custom_positions_v9', JSON.stringify(updated));
+      localStorage.setItem('tm_company_positions_v1', JSON.stringify(updated));
     }
   };
 
@@ -738,7 +714,7 @@ export default function Home() {
     downloadAnchor.remove();
   };
 
-  // Mulai Tes Dinamis Sesuai Posisi Pelamar
+  // Mulai Tes Dinamis Sesuai Posisi di Organigram
   const handleStartTest = (e) => {
     e.preventDefault();
     const applicant = {
@@ -749,16 +725,18 @@ export default function Home() {
     setCurrentApplicant(applicant);
 
     const posLower = applicant.position.toLowerCase();
-    const isCrewOutlet = posLower.includes('outlet') || posLower.includes('kasir') || posLower.includes('server') || posLower.includes('cook') || posLower.includes('kitchen') || posLower.includes('waiter');
-    const isDigitalMarketing = posLower.includes('marketing') || posLower.includes('social media') || posLower.includes('creative');
+    const isOutlet = posLower.includes('outlet') || posLower.includes('kebab') || posLower.includes('dagos') || posLower.includes('kasir') || posLower.includes('server') || posLower.includes('cook');
+    const isMarketing = posLower.includes('marketing') || posLower.includes('online sales') || posLower.includes('digital');
+    const isPropertySales = posLower.includes('inhouse') || posLower.includes('properti') || posLower.includes('sales supervisor');
 
-    let questions = [];
-    if (isCrewOutlet) {
-      questions = [...BASE_QUESTIONS, ...CREW_OUTLET_QUESTIONS];
-    } else if (isDigitalMarketing) {
-      questions = [...BASE_QUESTIONS, ...DIGITAL_MARKETING_QUESTIONS];
-    } else {
-      questions = [...BASE_QUESTIONS, ...GENERAL_COGNITIVE_QUESTIONS];
+    // Seluruh posisi tetap mendapatkan: DISC (8) + MBTI (8) + IQ KOGNITIF (6)
+    let questions = [...BASE_QUESTIONS];
+    if (isOutlet) {
+      questions = [...questions, ...OUTLET_QUESTIONS]; // + 4 Soal Kasir & Pelayanan
+    } else if (isMarketing) {
+      questions = [...questions, ...MARKETING_QUESTIONS]; // + 4 Soal Metrik Ads & Copywriting
+    } else if (isPropertySales) {
+      questions = [...questions, ...INHOUSE_SALES_QUESTIONS]; // + 2 Soal Negosiasi & Closing Properti
     }
 
     setActiveQuestions(questions);
@@ -768,7 +746,7 @@ export default function Home() {
     setView('test-runner');
   };
 
-  // Kalkulasi Skor & Sinkronisasi Cloud + LocalStorage
+  // Kalkulasi Skor
   const calculateResults = async () => {
     // 1. DISC Scoring
     let d = 40, i = 35, s = 30, c = 45;
@@ -793,10 +771,10 @@ export default function Home() {
     s = Math.min(95, Math.max(20, s));
     c = Math.min(95, Math.max(20, c));
 
-    let dom = 'I-S (Customer Oriented)';
-    if (i >= d && i >= c && i >= s) dom = 'I-S (Hospitality & Friendly)';
-    else if (d >= i && d >= s && d >= c) dom = 'D-C (Fast & Action Driven)';
-    else if (s >= d && s >= i && s >= c) dom = 'S-C (Calm & Reliable)';
+    let dom = 'I-D (Action Driver)';
+    if (i >= d && i >= c && i >= s) dom = 'I-D (Persuasive Communicator)';
+    else if (d >= i && d >= s && d >= c) dom = 'D-C (Target Driven Leader)';
+    else if (s >= d && s >= i && s >= c) dom = 'S-C (Reliable & Stable)';
     else if (c >= d && c >= i && c >= s) dom = 'C-S (Accurate & Compliant)';
 
     // 2. MBTI Scoring
@@ -822,82 +800,85 @@ export default function Home() {
     const mbtiType = `${eCount >= iCount ? 'E' : 'I'}${sCount >= nCount ? 'S' : 'N'}${tCount >= fCount ? 'T' : 'F'}${jCount >= pCount ? 'J' : 'P'}`;
 
     const mbtiDict = {
-      ESFJ: { title: 'The Host / Provider', desc: 'Sangat ramah, tanggap terhadap kebutuhan pelanggan, dan pandai mencairkan suasana outlet.' },
-      ISFJ: { title: 'The Protector / Support', desc: 'Pekerja tekun, sabar, telaten melayani, dan sangat disiplin mematuhi SOP kebersihan.' },
-      ESTJ: { title: 'The Executive / Supervisor', desc: 'Tegas, disiplin operasional tinggi, teratur, dan memastikan target shift tercapai.' },
-      ISTJ: { title: 'The Logistician / Inspector', desc: 'Sangat teliti, akurat menghitung kasir & stok bahan baku, serta konsisten.' },
-      ENFP: { title: 'The Campaigner', desc: 'Kreatif, energik, komunikator ulung, dan cepat membangun hubungan interpersonal.' },
-      ENTP: { title: 'The Visionary', desc: 'Sangat kreatif, cepat melihat peluang baru, dan adaptif terhadap dinamika.' }
+      ENFP: { title: 'The Campaigner / Top Seller', desc: 'Sangat komunikatif, energik, cepat membangun hubungan baik dengan calon pembeli.' },
+      ENTP: { title: 'The Visionary / Strategist', desc: 'Cepat melihat peluang baru, tajam merumuskan strategi penawaran, dan inovatif.' },
+      ESTJ: { title: 'The Executive / Supervisor', desc: 'Tegas, disiplin operasional tinggi, teratur, dan memastikan target tim tercapai.' },
+      ESFJ: { title: 'The Provider / Host', desc: 'Sangat ramah, tanggap melayani konsumen, dan menjaga keharmonisan tim kerja.' },
+      ISTJ: { title: 'The Inspector / Admin Master', desc: 'Sangat teliti, akurat mengelola berkas & data, serta taat prosedur perusahaan.' },
+      ENTJ: { title: 'The Commander', desc: 'Pemimpin strategis dengan fokus eksekusi target dan skala pertumbuhan bisnis.' }
     };
-    const mbtiMeta = mbtiDict[mbtiType] || { title: 'Reliable Specialist', desc: 'Memiliki karakter fokus, disiplin, dan bertanggung jawab terhadap tugas.' };
+    const mbtiMeta = mbtiDict[mbtiType] || { title: 'Reliable Professional', desc: 'Memiliki karakter bertanggung jawab, fokus, dan disiplin.' };
+
+    // 3. IQ Scoring (Wajib Semua Posisi)
+    let iqCorrect = 0;
+    activeQuestions.forEach((q, idx) => {
+      if (q.module === 'iq' && answers[`q_${idx}`] === q.correct) iqCorrect++;
+    });
+    const iqScore = 90 + Math.round((iqCorrect / 6) * 35);
+    let iqCat = 'Rata-rata (Average)';
+    if (iqScore >= 120) iqCat = 'Superior';
+    else if (iqScore >= 110) iqCat = 'Di Atas Rata-rata';
 
     const posLower = currentApplicant.position.toLowerCase();
-    const isCrewOutlet = posLower.includes('outlet') || posLower.includes('kasir') || posLower.includes('server') || posLower.includes('cook') || posLower.includes('kitchen') || posLower.includes('waiter');
-    const isDigitalMarketing = posLower.includes('marketing') || posLower.includes('social media') || posLower.includes('creative');
+    const isOutlet = posLower.includes('outlet') || posLower.includes('kebab') || posLower.includes('dagos') || posLower.includes('kasir') || posLower.includes('server') || posLower.includes('cook');
+    const isMarketing = posLower.includes('marketing') || posLower.includes('online sales') || posLower.includes('digital');
+    const isPropertySales = posLower.includes('inhouse') || posLower.includes('properti') || posLower.includes('sales supervisor');
 
     let outletResult = null;
     let marketingResult = null;
-    let match = 68;
+    let propertySalesResult = null;
+    let match = 65;
 
-    if (isCrewOutlet) {
-      let servCorrect = 0;
+    if (isOutlet) {
+      let servCorrect = 0, cashCorrect = 0;
       activeQuestions.forEach((q, idx) => {
         if (q.module === 'outlet_service' && answers[`q_${idx}`] === q.correct) servCorrect++;
-      });
-      const servScore = Math.round((servCorrect / 4) * 100);
-      let servCat = 'Cukup Ramah';
-      if (servScore >= 100) servCat = 'Hospitality Star (Sangat Ramah & Solutif)';
-      else if (servScore >= 75) servCat = 'Baik & Sopan';
-
-      let cashCorrect = 0;
-      activeQuestions.forEach((q, idx) => {
         if (q.module === 'outlet_cashier' && answers[`q_${idx}`] === q.correct) cashCorrect++;
       });
-      const cashScore = Math.round((cashCorrect / 4) * 100);
-      let cashCat = 'Perlu Pendampingan';
-      if (cashScore >= 100) cashCat = '100% Akurat Tanpa Selisih (Kasir Ready)';
-      else if (cashScore >= 75) cashCat = 'Teliti';
-
       outletResult = {
-        serviceScore: servScore,
-        serviceCat: servCat,
-        cashierScore: cashScore,
-        cashierCat: cashCat
+        serviceScore: Math.round((servCorrect / 2) * 100),
+        cashierScore: Math.round((cashCorrect / 2) * 100)
       };
-
-      match += Math.round((servScore / 100) * 15) + Math.round((cashScore / 100) * 15);
-      if (mbtiType.includes('E') || mbtiType.includes('F')) match += 4;
-    } else if (isDigitalMarketing) {
+      match += Math.round((outletResult.serviceScore / 100) * 15) + Math.round((outletResult.cashierScore / 100) * 15);
+    } else if (isMarketing) {
       let mCorrect = 0;
       activeQuestions.forEach((q, idx) => {
         if (q.module === 'marketing' && answers[`q_${idx}`] === q.correct) mCorrect++;
       });
-      const mScore = Math.round((mCorrect / 8) * 100);
       marketingResult = {
-        score: mScore,
-        correct: mCorrect,
-        total: 8,
-        cat: mScore >= 85 ? 'Expert (Creative & Analytical)' : (mScore >= 70 ? 'Kompeten' : 'Intermediate')
+        score: Math.round((mCorrect / 4) * 100),
+        cat: mCorrect >= 3 ? 'Expert (Creative & Analytical)' : 'Intermediate'
       };
-      match += Math.round((mScore / 100) * 26);
-    } else {
-      match += 20;
+      match += Math.round((marketingResult.score / 100) * 25);
+    } else if (isPropertySales) {
+      let psCorrect = 0;
+      activeQuestions.forEach((q, idx) => {
+        if (q.module === 'property_sales' && answers[`q_${idx}`] === q.correct) psCorrect++;
+      });
+      propertySalesResult = {
+        score: Math.round((psCorrect / 2) * 100),
+        cat: psCorrect >= 2 ? 'Expert (Top Closing Skill)' : 'Good'
+      };
+      match += Math.round((propertySalesResult.score / 100) * 25);
     }
 
+    if (iqScore >= 110) match += 8;
     match = Math.min(98, Math.max(50, match));
 
     const resultObj = {
       ...currentApplicant,
-      roleType: isCrewOutlet ? 'crew_outlet' : (isDigitalMarketing ? 'digital_marketing' : 'general'),
+      roleType: isOutlet ? 'outlet' : (isMarketing ? 'marketing' : (isPropertySales ? 'property_sales' : 'general')),
       disc: { d, i, s, c, dom },
       mbti: { type: mbtiType, title: mbtiMeta.title, desc: mbtiMeta.desc },
+      iq: { score: iqScore, cat: iqCat, correct: iqCorrect, total: 6 },
       outletScore: outletResult,
       marketing: marketingResult,
+      propertySales: propertySalesResult,
       match,
       status: match >= 85 ? 'STRONGLY RECOMMENDED' : (match >= 70 ? 'RECOMMENDED' : 'CONSIDER')
     };
 
-    // 1. Simpan ke Cloud Supabase (Jika sudah dikonfigurasi)
+    // Simpan ke Supabase Cloud jika aktif
     const sUrl = localStorage.getItem('tm_supabase_url') || supabaseUrl;
     const sKey = localStorage.getItem('tm_supabase_key') || supabaseKey;
     if (sUrl && sKey) {
@@ -921,18 +902,18 @@ export default function Home() {
             test_date: resultObj.date,
             disc_summary: resultObj.disc,
             mbti_summary: resultObj.mbti,
+            iq_summary: resultObj.iq,
             outlet_score: resultObj.outletScore,
             marketing_score: resultObj.marketing,
+            property_sales_score: resultObj.propertySales,
             match_score: resultObj.match,
             recommendation_status: resultObj.status
           })
         });
-      } catch (err) {
-        console.warn('Gagal sync ke cloud:', err);
-      }
+      } catch (err) {}
     }
 
-    // 2. Simpan ke LocalStorage Persisten
+    // Simpan ke LocalStorage Persisten
     const existingRaw = localStorage.getItem('talentmatrix_persistent_db');
     let existingList = [];
     if (existingRaw) {
@@ -960,7 +941,7 @@ export default function Home() {
         const element = document.getElementById('printable-report');
         const opt = {
           margin: [10, 10, 10, 10],
-          filename: `Laporan_Asesmen_${activeReport?.name.replace(/\s+/g, '_')}.pdf`,
+          filename: `Laporan_${activeReport?.name.replace(/\s+/g, '_')}.pdf`,
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: { scale: 2, useCORS: true },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -970,31 +951,30 @@ export default function Home() {
     }
   };
 
-  // Kirim Hasil Otomatis via WhatsApp ke HR
   const sendResultToWhatsApp = () => {
     if (!activeReport) return;
     const wa = hrWaNumber.replace(/[^0-9]/g, '');
-    let specificInfo = '';
+    let specificInfo = `*Skor IQ Kognitif:* ${activeReport.iq?.score} (${activeReport.iq?.cat})`;
 
-    if (activeReport.roleType === 'crew_outlet' && activeReport.outletScore) {
-      specificInfo = `*Hospitality CS:* ${activeReport.outletScore.serviceScore}% (${activeReport.outletScore.serviceCat})\n*Ketelitian Kasir:* ${activeReport.outletScore.cashierScore}% (${activeReport.outletScore.cashierCat})`;
-    } else if (activeReport.roleType === 'digital_marketing' && activeReport.marketing) {
-      specificInfo = `*Skor Digital Marketing:* ${activeReport.marketing.score}% (${activeReport.marketing.cat})`;
-    } else {
-      specificInfo = `*Status Tes:* Selesai Lengkap`;
+    if (activeReport.roleType === 'outlet' && activeReport.outletScore) {
+      specificInfo += `\n*Hospitality CS:* ${activeReport.outletScore.serviceScore}%\n*Ketelitian Kasir:* ${activeReport.outletScore.cashierScore}%`;
+    } else if (activeReport.roleType === 'marketing' && activeReport.marketing) {
+      specificInfo += `\n*Skor Digital Marketing:* ${activeReport.marketing.score}% (${activeReport.marketing.cat})`;
+    } else if (activeReport.roleType === 'property_sales' && activeReport.propertySales) {
+      specificInfo += `\n*Skor Sales Properti & Closing:* ${activeReport.propertySales.score}% (${activeReport.propertySales.cat})`;
     }
 
     const text = `Halo Tim HRD, saya telah menyelesaikan Tes Asesmen Online:\n\n` +
       `*Nama Pelamar:* ${activeReport.name}\n` +
       `*ID Token:* ${activeReport.id}\n` +
-      `*Posisi Dilamar:* ${activeReport.position}\n` +
+      `*Posisi Dilamar:* ${activeReport.position} (${activeReport.dept})\n` +
       `*No. WA:* ${activeReport.phone}\n` +
       `*Tipe MBTI:* ${activeReport.mbti.type} (${activeReport.mbti.title})\n` +
       `*DISC Dominan:* ${activeReport.disc.dom}\n` +
       `${specificInfo}\n\n` +
       `*Hasil Akhir:* ${activeReport.status} (Fit Index: ${activeReport.match}%)\n` +
       `*Tanggal:* ${activeReport.date}\n\n` +
-      `Mohon verifikasi dan arahan untuk tahapan interview selanjutnya. Terima kasih!`;
+      `Mohon verifikasi dan arahan untuk tahapan selanjutnya. Terima kasih!`;
 
     const waUrl = `https://api.whatsapp.com/send?phone=${wa}&text=${encodeURIComponent(text)}`;
     window.open(waUrl, '_blank');
@@ -1002,7 +982,6 @@ export default function Home() {
 
   const q = activeQuestions[qIndex];
 
-  // Filter List Pelamar di Dashboard HR
   const filteredApplicants = db.filter(item => {
     const qLower = searchQuery.toLowerCase();
     return (
@@ -1024,7 +1003,7 @@ export default function Home() {
             </div>
             <div>
               <span className="font-extrabold text-base tracking-tight bg-gradient-to-r from-white via-slate-100 to-sky-400 bg-clip-text text-transparent">TalentMatrix AI</span>
-              <span className="text-[10px] ml-2 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">Cloud & WA Sync</span>
+              <span className="text-[10px] ml-2 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">Enterprise Multi-Brand</span>
             </div>
           </div>
 
@@ -1056,10 +1035,10 @@ export default function Home() {
             <div className="max-w-xl mx-auto text-center space-y-2 mb-8">
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-sky-50 text-sky-700 text-xs font-bold border border-sky-200">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Smart Role-Adaptive Assessment</span>
+                <span>Online Recruitment Screening</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Formulir Data Diri Pelamar</h1>
-              <p className="text-xs sm:text-sm text-slate-500">Pilih lowongan pekerjaan yang dilamar dan mulai tes evaluasi online.</p>
+              <p className="text-xs sm:text-sm text-slate-500">Pilih posisi yang Anda lamar sesuai unit bisnis (F&B / Properti / Operasional).</p>
             </div>
 
             <form onSubmit={handleStartTest} className="max-w-lg mx-auto space-y-4">
@@ -1070,7 +1049,7 @@ export default function Home() {
                   required 
                   value={form.name} 
                   onChange={e => setForm({...form, name: e.target.value})} 
-                  placeholder="Contoh: Siti Rahmawati" 
+                  placeholder="Contoh: Khairul Anam" 
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none" 
                 />
               </div>
@@ -1100,7 +1079,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Posisi Terkunci (Pilihan Resmi HR) */}
+              {/* Posisi Terkunci (Sesuai Organigram Perusahaan) */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">Posisi yang Dilamar *</label>
                 <select 
@@ -1111,47 +1090,41 @@ export default function Home() {
                     setForm({
                       ...form, 
                       position: selTitle, 
-                      dept: matched ? matched.dept : 'General Operations'
+                      dept: matched ? matched.dept : 'Operations'
                     });
                   }} 
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-sky-500 focus:outline-none"
                 >
                   {positionsList.map((pos, idx) => (
                     <option key={idx} value={pos.title}>
-                      {pos.title} ({pos.dept})
+                      {pos.title} — [{pos.dept}]
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Banner Info Modul Sesuai Posisi */}
+              {/* Banner Info Modul */}
               <div className="p-4 bg-sky-50 rounded-2xl border border-sky-100 text-xs text-sky-950 space-y-1.5">
                 <div className="font-bold flex items-center space-x-1.5">
-                  <Info className="w-4 h-4 text-sky-600" />
-                  <span>Materi Evaluasi Posisi {form.position}:</span>
+                  <Building2 className="w-4 h-4 text-sky-600" />
+                  <span>Struktur Evaluasi {form.position}:</span>
                 </div>
-                {form.position.toLowerCase().includes('outlet') || form.position.toLowerCase().includes('kasir') || form.position.toLowerCase().includes('server') || form.position.toLowerCase().includes('cook') ? (
-                  <ul className="list-disc list-inside space-y-0.5 text-slate-600">
-                    <li><strong>Modul 1 (DISC):</strong> Gaya kerja di bawah tekanan & kolaborasi shift.</li>
-                    <li><strong>Modul 2 (MBTI):</strong> Kepribadian & kepatuhan terhadap SOP operasional.</li>
-                    <li><strong>Modul 3A Khusus Pelayanan:</strong> Penanganan komplain pelanggan, keramahan hospitality, upsell, & kebersihan meja.</li>
-                    <li><strong>Modul 3B Khusus Kasir:</strong> Perhitungan uang kembalian, diskon promo, & hitung kasir.</li>
-                  </ul>
-                ) : form.position.toLowerCase().includes('marketing') ? (
-                  <ul className="list-disc list-inside space-y-0.5 text-slate-600">
-                    <li><strong>Modul 1 & 2 (DISC + MBTI):</strong> Gaya kerja kreatif & pemikiran konseptual.</li>
-                    <li><strong>Modul 3 Khusus Digital Marketing:</strong> Metrik Ads (CTR/ROAS), Formula Hook AIDA, Funneling & Kalender Konten.</li>
-                  </ul>
-                ) : (
-                  <ul className="list-disc list-inside space-y-0.5 text-slate-600">
-                    <li><strong>Modul 1 & 2:</strong> DISC & MBTI Profiling.</li>
-                    <li><strong>Modul 3:</strong> Kemampuan Logika & Penalaran Masalah.</li>
-                  </ul>
-                )}
+                <ul className="list-disc list-inside space-y-0.5 text-slate-600">
+                  <li><strong>Modul 1:</strong> Gaya Kerja & Komunikasi (DISC Profile)</li>
+                  <li><strong>Modul 2:</strong> Preferensi Kepribadian (MBTI Indicator)</li>
+                  <li><strong>Modul 3:</strong> Tes Kemampuan Logika & Kognitif (IQ Engine)</li>
+                  {form.position.toLowerCase().includes('outlet') || form.position.toLowerCase().includes('kebab') || form.position.toLowerCase().includes('dagos') ? (
+                    <li><strong>Modul 4 Khusus Outlet:</strong> Pelayanan Hospitality CS & Aritmatika Kasir</li>
+                  ) : form.position.toLowerCase().includes('marketing') || form.position.toLowerCase().includes('online sales') ? (
+                    <li><strong>Modul 4 Khusus Marketing:</strong> Metrik Iklan (CTR/ROAS) & Copywriting AIDA</li>
+                  ) : form.position.toLowerCase().includes('inhouse') || form.position.toLowerCase().includes('properti') ? (
+                    <li><strong>Modul 4 Khusus Property Sales:</strong> Negosiasi, Handling Keberatan & Closing KPR</li>
+                  ) : null}
+                </ul>
               </div>
 
               <button type="submit" className="w-full py-3.5 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-sky-500/25 flex items-center justify-center space-x-2 transition">
-                <span>Mulai Pengerjaan Tes Sekarang</span>
+                <span>Mulai Pengerjaan Tes Lengkap</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
@@ -1166,7 +1139,7 @@ export default function Home() {
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <h2 className="text-xl font-black text-slate-900">Login Portal HRD</h2>
-              <p className="text-xs text-slate-500">Area terproteksi khusus tim HR. Pelamar tidak diizinkan masuk.</p>
+              <p className="text-xs text-slate-500">Area terproteksi tim HR. Pelamar tidak diizinkan mengakses.</p>
             </div>
 
             <form onSubmit={handleHrLogin} className="space-y-4">
@@ -1239,7 +1212,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Dynamic Question Container */}
+            {/* Question Box */}
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 min-h-[240px]">
               <p className="text-xs font-bold text-slate-700 mb-3">{q.instruction}</p>
 
@@ -1295,7 +1268,7 @@ export default function Home() {
               )}
 
               {/* Specific Options */}
-              {(q.module === 'outlet_service' || q.module === 'outlet_cashier' || q.module === 'marketing' || q.module === 'iq') && (
+              {(q.module === 'iq' || q.module === 'outlet_service' || q.module === 'outlet_cashier' || q.module === 'marketing' || q.module === 'property_sales') && (
                 <div className="space-y-2">
                   {q.options.map((opt) => (
                     <label key={opt.key} className="flex items-center space-x-3 p-3.5 bg-white rounded-xl border border-slate-200 hover:border-sky-400 cursor-pointer transition">
@@ -1342,7 +1315,6 @@ export default function Home() {
                 <span className="text-xs font-extrabold text-slate-800">Laporan Asesmen Telah Terbit & Tersimpan</span>
               </div>
               <div className="flex items-center space-x-2">
-                {/* Tombol Kirim Otomatis ke WhatsApp HRD */}
                 <button 
                   onClick={sendResultToWhatsApp} 
                   className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-md transition"
@@ -1367,7 +1339,7 @@ export default function Home() {
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-widest text-sky-400">STANDARDIZED TALENT ASSESSMENT REPORT</span>
                   <h1 className="text-xl sm:text-2xl font-black mt-0.5">LAPORAN HASIL ASESMEN PELAMAR</h1>
-                  <p className="text-xs text-slate-400">Evaluasi Karakter (DISC & MBTI) serta Uji Kompetensi Spesifik Jabatan</p>
+                  <p className="text-xs text-slate-400">Evaluasi Karakter (DISC & MBTI), Skor IQ Kognitif, serta Uji Kompetensi Jabatan</p>
                 </div>
                 <div className="px-4 py-2 rounded-xl bg-emerald-500 text-white font-extrabold text-xs text-center">
                   {activeReport.status}<br />
@@ -1379,8 +1351,8 @@ export default function Home() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-4 rounded-xl text-xs border border-slate-200">
                 <div><span className="text-slate-400 block font-bold text-[10px]">Nama:</span><strong>{activeReport.name}</strong></div>
                 <div><span className="text-slate-400 block font-bold text-[10px]">Token ID:</span><strong>{activeReport.id}</strong></div>
-                <div><span className="text-slate-400 block font-bold text-[10px]">Posisi Dilamar:</span><strong>{activeReport.position}</strong></div>
-                <div><span className="text-slate-400 block font-bold text-[10px]">Tanggal Tes:</span><strong>{activeReport.date}</strong></div>
+                <div><span className="text-slate-400 block font-bold text-[10px]">Posisi:</span><strong>{activeReport.position}</strong></div>
+                <div><span className="text-slate-400 block font-bold text-[10px]">Departemen:</span><strong>{activeReport.dept}</strong></div>
               </div>
 
               {/* Charts & Breakdown */}
@@ -1416,19 +1388,31 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* MBTI Card */}
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-black text-slate-800">B. Tipe Kepribadian (MBTI)</span>
-                    <span className="px-2.5 py-0.5 rounded bg-purple-100 text-purple-800 text-xs font-black">{activeReport.mbti.type}</span>
+                {/* MBTI & IQ Card */}
+                <div className="space-y-4">
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-black text-slate-800">B. Tipe Kepribadian (MBTI)</span>
+                      <span className="px-2.5 py-0.5 rounded bg-purple-100 text-purple-800 text-xs font-black">{activeReport.mbti.type}</span>
+                    </div>
+                    <div className="text-xs font-bold text-purple-900">{activeReport.mbti.title}</div>
+                    <p className="text-[11px] text-slate-600 leading-relaxed">{activeReport.mbti.desc}</p>
                   </div>
-                  <div className="text-xs font-bold text-purple-900">{activeReport.mbti.title}</div>
-                  <p className="text-[11px] text-slate-600 leading-relaxed">{activeReport.mbti.desc}</p>
+
+                  {/* KARTU SKOR IQ */}
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-black text-slate-800">C. Kemampuan Kognitif (IQ)</span>
+                      <span className="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[10px] font-bold">{activeReport.iq?.cat}</span>
+                    </div>
+                    <div className="text-2xl font-black text-sky-600">{activeReport.iq?.score} <span className="text-xs font-medium text-slate-500">Skala Baku SD 15</span></div>
+                    <p className="text-[11px] text-slate-600">Menjawab benar {activeReport.iq?.correct} dari {activeReport.iq?.total} instrumen logika & silogisme.</p>
+                  </div>
                 </div>
               </div>
 
-              {/* Modul Spesifik CREW OUTLET */}
-              {activeReport.roleType === 'crew_outlet' && activeReport.outletScore && (
+              {/* Modul Spesifik OUTLET */}
+              {activeReport.roleType === 'outlet' && activeReport.outletScore && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 space-y-1.5">
                     <div className="flex items-center space-x-1.5 text-emerald-800 font-extrabold text-xs">
@@ -1436,36 +1420,52 @@ export default function Home() {
                       <span>Pelayanan CS & Hospitality Outlet</span>
                     </div>
                     <div className="text-2xl font-black text-emerald-800">{activeReport.outletScore.serviceScore}%</div>
-                    <div className="text-[11px] text-emerald-900 font-semibold">{activeReport.outletScore.serviceCat}</div>
-                    <p className="text-[10px] text-slate-600">Evaluasi respon saat komplain pelanggan, keramahan menyapa, dan inisiatif kebersihan meja.</p>
+                    <p className="text-[10px] text-slate-600">Evaluasi respon penanganan komplain pelanggan dan kesigapan melayani.</p>
                   </div>
 
                   <div className="bg-sky-50/70 border border-sky-200 rounded-2xl p-4 space-y-1.5">
                     <div className="flex items-center space-x-1.5 text-sky-800 font-extrabold text-xs">
                       <Calculator className="w-4 h-4 text-sky-600" />
-                      <span>Ketelitian Berhitung & Kasir</span>
+                      <span>Ketelitian Berhitung Kasir</span>
                     </div>
                     <div className="text-2xl font-black text-sky-800">{activeReport.outletScore.cashierScore}%</div>
-                    <div className="text-[11px] text-sky-900 font-semibold">{activeReport.outletScore.cashierCat}</div>
-                    <p className="text-[10px] text-slate-600">Evaluasi perhitungan uang kembalian pecahan, diskon promo, dan hitung kas kasir.</p>
+                    <p className="text-[10px] text-slate-600">Evaluasi perhitungan uang kembalian pecahan dan diskon promo outlet.</p>
                   </div>
                 </div>
               )}
 
-              {/* Modul Spesifik DIGITAL MARKETING */}
-              {activeReport.roleType === 'digital_marketing' && activeReport.marketing && (
+              {/* Modul Spesifik MARKETING */}
+              {activeReport.roleType === 'marketing' && activeReport.marketing && (
                 <div className="bg-purple-50/80 border border-purple-200 rounded-2xl p-4 space-y-2">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-2">
                       <Megaphone className="w-4 h-4 text-purple-700" />
-                      <span className="text-xs font-black text-purple-900 uppercase">C. Hasil Evaluasi Digital Marketing & Kreativitas</span>
+                      <span className="text-xs font-black text-purple-900 uppercase">D. Evaluasi Digital Marketing & Kreativitas</span>
                     </div>
                     <span className="px-3 py-1 rounded-full bg-purple-200 text-purple-900 text-xs font-black">
                       Skor: {activeReport.marketing.score}% ({activeReport.marketing.cat})
                     </span>
                   </div>
                   <div className="text-xs text-purple-950 leading-relaxed">
-                    Pelamar berhasil menjawab benar {activeReport.marketing.correct} dari {activeReport.marketing.total} studi kasus (Metrik Iklan CTR & ROAS, Formula Copywriting AIDA/Hook, dan Kalender Konten).
+                    Evaluasi mencakup pemahaman Metrik Iklan (CTR/ROAS) dan Formula Copywriting Hook AIDA.
+                  </div>
+                </div>
+              )}
+
+              {/* Modul Spesifik PROPERTY SALES */}
+              {activeReport.roleType === 'property_sales' && activeReport.propertySales && (
+                <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center space-x-2">
+                      <Building2 className="w-4 h-4 text-amber-700" />
+                      <span className="text-xs font-black text-amber-900 uppercase">D. Evaluasi Negosiasi & Closing Sales Properti</span>
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-amber-200 text-amber-900 text-xs font-black">
+                      Skor: {activeReport.propertySales.score}% ({activeReport.propertySales.cat})
+                    </span>
+                  </div>
+                  <div className="text-xs text-amber-950 leading-relaxed">
+                    Evaluasi kemampuan handling objection cicilan konsumen dan kecepatan follow-up prospek site visit.
                   </div>
                 </div>
               )}
@@ -1474,7 +1474,7 @@ export default function Home() {
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-1">
                 <span className="text-xs font-bold text-slate-900">Analisis Rekomendasi Penempatan ({activeReport.match}% Match Index):</span>
                 <p className="text-xs text-slate-700 leading-relaxed">
-                  Kombinasi kepribadian {activeReport.mbti.type} ({activeReport.mbti.title}) dengan profil DISC {activeReport.disc.dom.split(' ')[0]} dan hasil uji kecakapan praktis menunjukkan kandidat memiliki kesesuaian yang sangat solid untuk mengisi peranan <strong>{activeReport.position}</strong> di departemen <strong>{activeReport.dept}</strong>.
+                  Kombinasi kepribadian {activeReport.mbti.type} ({activeReport.mbti.title}), profil DISC {activeReport.disc.dom.split(' ')[0]}, dan skor IQ {activeReport.iq?.score} ({activeReport.iq?.cat}) menunjukkan kesiapan kerja yang sangat solid untuk mengisi peranan <strong>{activeReport.position}</strong> di departemen <strong>{activeReport.dept}</strong>.
                 </p>
               </div>
 
@@ -1486,14 +1486,14 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="h-12 flex items-end justify-center italic text-slate-400">HR Approval</div>
-                  <div className="border-t border-slate-400 w-36 mx-auto pt-1 font-bold">Budi Santoso, S.E., MBA</div>
+                  <div className="border-t border-slate-400 w-36 mx-auto pt-1 font-bold">Ardiansyah (Director)</div>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* 5. PORTAL HRD PERSISTEN LENGKAP */}
+        {/* 5. PORTAL HRD PERSISTEN */}
         {view === 'hr-dashboard' && isHrAuthenticated && (
           <div className="space-y-6">
             <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
@@ -1510,14 +1510,14 @@ export default function Home() {
                       <span className="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[10px] font-bold">LocalStorage Mode</span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500">Seluruh data pelamar tersimpan permanen dan terupdate secara realtime.</p>
+                  <p className="text-xs text-slate-500">Seluruh data pelamar dan skor IQ tersimpan permanen di database.</p>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <button onClick={() => setShowSettingsModal(true)} title="Atur Cloud DB & No. WA" className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200 flex items-center space-x-1">
+                  <button onClick={() => setShowSettingsModal(true)} className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200 flex items-center space-x-1">
                     <Settings className="w-3.5 h-3.5" />
                     <span>Setup Cloud & WA</span>
                   </button>
-                  <button onClick={handleExportBackup} title="Unduh file backup JSON" className="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl text-xs font-bold border border-emerald-200 flex items-center space-x-1">
+                  <button onClick={handleExportBackup} className="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl text-xs font-bold border border-emerald-200 flex items-center space-x-1">
                     <FileDown className="w-3.5 h-3.5" />
                     <span>Backup Data</span>
                   </button>
@@ -1569,14 +1569,14 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Tabel Rekap Pelamar dengan Search & Filter */}
+              {/* Tabel Rekap Pelamar */}
               <div className="space-y-3 pt-2">
                 <div className="flex flex-wrap justify-between items-center gap-3">
                   <div>
                     <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
                       Daftar Rekap Hasil Seluruh Pelamar ({filteredApplicants.length} Data)
                     </h3>
-                    <p className="text-[11px] text-slate-400">Semua data pelamar yang pernah mengerjakan tes tersimpan rapi di sini.</p>
+                    <p className="text-[11px] text-slate-400">Seluruh data hasil tes termasuk skor IQ tersimpan rapi di sini.</p>
                   </div>
                   <div className="relative w-full sm:w-64">
                     <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" />
@@ -1598,7 +1598,8 @@ export default function Home() {
                         <th className="p-3">Posisi Dilamar</th>
                         <th className="p-3 text-center">MBTI</th>
                         <th className="p-3 text-center">DISC</th>
-                        <th className="p-3 text-center">Hasil Uji Spesifik</th>
+                        <th className="p-3 text-center">Skor IQ</th>
+                        <th className="p-3 text-center">Uji Bidang</th>
                         <th className="p-3 text-center">Fit Score</th>
                         <th className="p-3 text-right">Aksi</th>
                       </tr>
@@ -1606,8 +1607,8 @@ export default function Home() {
                     <tbody className="divide-y divide-slate-100">
                       {filteredApplicants.length === 0 ? (
                         <tr>
-                          <td colSpan="7" className="p-6 text-center text-slate-400">
-                            Tidak ada data pelamar yang cocok dengan pencarian.
+                          <td colSpan="8" className="p-6 text-center text-slate-400">
+                            Tidak ada data pelamar yang cocok.
                           </td>
                         </tr>
                       ) : (
@@ -1624,7 +1625,11 @@ export default function Home() {
                             <td className="p-3 text-center font-bold text-purple-700">{c.mbti.type}</td>
                             <td className="p-3 text-center font-bold">{c.disc.dom.split(' ')[0]}</td>
                             <td className="p-3 text-center">
-                              {c.roleType === 'crew_outlet' && c.outletScore ? (
+                              <span className="font-mono font-bold text-sky-600">{c.iq?.score || 115}</span>
+                              <div className="text-[9px] text-slate-400">{c.iq?.cat || 'Rata-rata'}</div>
+                            </td>
+                            <td className="p-3 text-center">
+                              {c.roleType === 'outlet' && c.outletScore ? (
                                 <div className="space-y-0.5">
                                   <span className="inline-block px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[9px] mr-1">
                                     CS: {c.outletScore.serviceScore}%
@@ -1633,13 +1638,17 @@ export default function Home() {
                                     Kasir: {c.outletScore.cashierScore}%
                                   </span>
                                 </div>
-                              ) : c.roleType === 'digital_marketing' && c.marketing ? (
+                              ) : c.roleType === 'marketing' && c.marketing ? (
                                 <span className="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold text-[10px]">
                                   DM: {c.marketing.score}%
                                 </span>
+                              ) : c.roleType === 'property_sales' && c.propertySales ? (
+                                <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[10px]">
+                                  Sales: {c.propertySales.score}%
+                                </span>
                               ) : (
                                 <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold text-[10px]">
-                                  Standar Fit
+                                  Umum
                                 </span>
                               )}
                             </td>
@@ -1657,7 +1666,6 @@ export default function Home() {
                               </button>
                               <button 
                                 onClick={() => handleDeleteApplicant(c.id, c.name)} 
-                                title="Hapus data pelamar ini"
                                 className="p-1 text-slate-300 hover:text-rose-600 rounded-lg transition"
                               >
                                 <Trash2 className="w-3.5 h-3.5 inline" />
@@ -1673,7 +1681,7 @@ export default function Home() {
 
             </div>
 
-            {/* Modal Setup Database Cloud & WhatsApp HR */}
+            {/* Modal Setup */}
             {showSettingsModal && (
               <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                 <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-200">
@@ -1682,8 +1690,8 @@ export default function Home() {
                       <Settings className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-900 text-sm">Setup Sinkronisasi Cloud & WhatsApp HRD</h3>
-                      <p className="text-[11px] text-slate-400">Agar data dari HP pelamar langsung masuk ke laptop HRD secara realtime.</p>
+                      <h3 className="font-bold text-slate-900 text-sm">Setup Cloud & WhatsApp HRD</h3>
+                      <p className="text-[11px] text-slate-400">Sinkronisasi hasil tes pelamar secara realtime.</p>
                     </div>
                   </div>
 
@@ -1698,11 +1706,10 @@ export default function Home() {
                         onChange={e => setHrWaNumber(e.target.value)} 
                         className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                       />
-                      <p className="text-[10px] text-slate-400 mt-1">Pelamar dapat mengirimkan rangkuman hasil tes langsung ke nomor ini.</p>
                     </div>
 
                     <div className="pt-2 border-t border-slate-100">
-                      <label className="block font-bold text-slate-700 mb-1">Supabase Project URL (Opsional untuk Cloud Sync)</label>
+                      <label className="block font-bold text-slate-700 mb-1">Supabase Project URL (Opsional)</label>
                       <input 
                         type="text" 
                         placeholder="https://xyzcompany.supabase.co" 
@@ -1721,7 +1728,6 @@ export default function Home() {
                         onChange={e => setSupabaseKey(e.target.value)} 
                         className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                       />
-                      <p className="text-[10px] text-slate-400 mt-1">Dapatkan URL & Anon Key gratis di dashboard Supabase (Project Settings → API).</p>
                     </div>
 
                     <div className="flex justify-end space-x-2 pt-3">
@@ -1761,7 +1767,7 @@ export default function Home() {
                       <input 
                         type="text" 
                         required 
-                        placeholder="Contoh: Barista & Waiter" 
+                        placeholder="Contoh: Staff Legal & KPR" 
                         value={newPosTitle} 
                         onChange={e => setNewPosTitle(e.target.value)} 
                         className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none"
@@ -1772,7 +1778,7 @@ export default function Home() {
                       <label className="block text-xs font-bold text-slate-700 mb-1">Departemen Terkait</label>
                       <input 
                         type="text" 
-                        placeholder="Contoh: Outlet Operations" 
+                        placeholder="Contoh: Human Capital" 
                         value={newPosDept} 
                         onChange={e => setNewPosDept(e.target.value)} 
                         className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none"
