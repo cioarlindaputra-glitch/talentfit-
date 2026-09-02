@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Award, Brain, CheckCircle, Clock, Download, Plus, 
   Printer, ShieldCheck, Sparkles, UserPlus, ArrowRight, Info, Briefcase,
-  Lock, KeyRound, LogOut, Eye, EyeOff, Calculator, Megaphone, Trash2, HeartHandshake, Search, FileDown, Building2
+  Lock, KeyRound, LogOut, Eye, EyeOff, Calculator, Megaphone, Trash2, HeartHandshake, Search, FileDown, Building2, Upload, FileText, CreditCard, ExternalLink
 } from 'lucide-react';
 import {
   Chart as ChartJS,
@@ -23,7 +23,7 @@ ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, 
 // 1. BANK SOAL UMUM (DISC, MBTI & IQ KOGNITIF)
 // =========================================================================
 const BASE_QUESTIONS = [
-  // --- MODUL 1: DISC (8 Soal Gaya Kerja) ---
+  // --- DISC (8 Soal) ---
   {
     module: 'disc',
     moduleTitle: 'Modul 1: Gaya Kerja & Komunikasi (DISC)',
@@ -121,7 +121,7 @@ const BASE_QUESTIONS = [
     ]
   },
 
-  // --- MODUL 2: MBTI (8 Soal Kepribadian) ---
+  // --- MODUL 2: MBTI (8 Soal) ---
   {
     module: 'mbti',
     dim: 'EI',
@@ -211,7 +211,7 @@ const BASE_QUESTIONS = [
     ]
   },
 
-  // --- MODUL 3: IQ & PENALARAN KOGNITIF (6 Soal Wajib Semua Posisi) ---
+  // --- MODUL 3: IQ & PENALARAN KOGNITIF (6 Soal) ---
   {
     module: 'iq',
     moduleTitle: 'Modul 3: Logika & Kemampuan Kognitif (IQ)',
@@ -293,7 +293,7 @@ const BASE_QUESTIONS = [
 ];
 
 // =========================================================================
-// 2. MODUL KHUSUS SALES OUTLET / CREW OUTLET (Corner Kebab & Dagos Steak)
+// 2. MODUL KHUSUS SALES OUTLET / CREW OUTLET
 // =========================================================================
 const OUTLET_QUESTIONS = [
   {
@@ -397,7 +397,7 @@ const MARKETING_QUESTIONS = [
     module: 'marketing',
     moduleTitle: 'Modul 4: Uji Strategi Digital Marketing & Ads',
     moduleBadge: 'Uji Digital Marketing',
-    instruction: 'Kreativitas Judul (Hook Angle): Manakah judul konten yang memiliki potensi Click-Through Rate (CTR) tertinggi untuk promosi perumahan/properti?',
+    instruction: 'Kreativitas Judul: Manakah judul konten yang memiliki potensi Click-Through Rate (CTR) tertinggi untuk promosi perumahan/properti?',
     correct: 'C',
     options: [
       { key: 'A', text: 'Dijual Rumah Murah dan Nyaman di Lokasi Strategis' },
@@ -458,25 +458,18 @@ export default function Home() {
   const [supabaseKey, setSupabaseKey] = useState('');
   const [showSettingsModal, setShowSettingsModal] = useState(false);
 
-  // DAFTAR POSISI LENGKAP SESUAI STRUKTUR ORGANISASI PERUSAHAAN
+  // DAFTAR POSISI
   const [positionsList, setPositionsList] = useState([
-    // Marketing & Sales
     { title: 'Marketing Strategic', dept: 'Marketing & Growth' },
     { title: 'Online Sales / Digital Sales', dept: 'Marketing & Growth' },
     { title: 'Sales Supervisor', dept: 'Sales Division' },
     { title: 'Inhouse Sales (Properti)', dept: 'Property Sales' },
     { title: 'Sales Outlet / Crew (Corner Kebab & Dagos)', dept: 'F&B Operations' },
-    
-    // Human Capital
     { title: 'HC Supervisor', dept: 'Human Capital' },
     { title: 'KPR & Recruitment Staff', dept: 'Human Capital' },
     { title: 'General Affairs / Maintenance & Kebersihan', dept: 'General Affairs' },
-    
-    // Finance
     { title: 'Finance Supervisor', dept: 'Finance & Accounting' },
     { title: 'Finance & Accounting Staff', dept: 'Finance & Accounting' },
-    
-    // Operational & Logistics
     { title: 'Operational Supervisor', dept: 'Operations & Logistics' },
     { title: 'Operator / Admin Cabang', dept: 'Operations & Logistics' },
     { title: 'Staff Gudang, Driver & TO', dept: 'Logistics & Supply' }
@@ -486,7 +479,7 @@ export default function Home() {
   const [newPosTitle, setNewPosTitle] = useState('');
   const [newPosDept, setNewPosDept] = useState('');
 
-  // Form Pelamar
+  // Form Pelamar & File Upload State
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -494,6 +487,9 @@ export default function Home() {
     position: 'Online Sales / Digital Sales',
     dept: 'Marketing & Growth'
   });
+
+  const [cvFile, setCvFile] = useState({ name: '', dataUrl: '' });
+  const [ktpFile, setKtpFile] = useState({ name: '', dataUrl: '' });
 
   const [currentApplicant, setCurrentApplicant] = useState(null);
   const [activeQuestions, setActiveQuestions] = useState([]);
@@ -505,7 +501,7 @@ export default function Home() {
   // Load Saved Database
   useEffect(() => {
     const savedPin = localStorage.getItem('tm_hr_pin');
-    const savedPos = localStorage.getItem('tm_company_positions_v1');
+    const savedPos = localStorage.getItem('tm_company_positions_v2');
     const savedWa = localStorage.getItem('tm_hr_wa');
     const savedUrl = localStorage.getItem('tm_supabase_url');
     const savedKey = localStorage.getItem('tm_supabase_key');
@@ -544,6 +540,8 @@ export default function Home() {
             dept: item.dept,
             roleType: item.role_type,
             date: item.test_date,
+            cv: item.cv_data || null,
+            ktp: item.ktp_data || null,
             disc: item.disc_summary,
             mbti: item.mbti_summary,
             iq: item.iq_summary,
@@ -563,28 +561,30 @@ export default function Home() {
     const savedDb = localStorage.getItem('talentmatrix_persistent_db');
     if (savedDb) {
       try { setDb(JSON.parse(savedDb)); } catch (e) {}
-    } else {
-      const initialSeed = [
-        {
-          id: 'APP-2026-SL01',
-          name: 'Khairul Anam',
-          email: 'khairul.sales@gmail.com',
-          phone: '081298765432',
-          position: 'Inhouse Sales (Properti)',
-          dept: 'Property Sales',
-          roleType: 'property_sales',
-          date: '28 Ags 2026',
-          disc: { d: 82, i: 88, s: 50, c: 65, dom: 'I-D (Top Closer)' },
-          mbti: { type: 'ENFP', title: 'The Campaigner', desc: 'Sangat komunikatif, persuasif, dan pandai membangun kedekatan dengan konsumen.' },
-          iq: { score: 120, cat: 'Superior', correct: 5, total: 6 },
-          propertySales: { score: 100, cat: 'Expert (High Negotiation & Closing)' },
-          match: 97,
-          status: 'STRONGLY RECOMMENDED'
-        }
-      ];
-      setDb(initialSeed);
-      localStorage.setItem('talentmatrix_persistent_db', JSON.stringify(initialSeed));
     }
+  };
+
+  // Convert File ke Base64 Data URL
+  const handleFileUpload = (e, type) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Batas file 2MB
+    if (file.size > 2 * 1024 * 1024) {
+      alert(`Ukuran berkas ${file.name} melebihi 2 MB. Harap gunakan berkas di bawah 2 MB!`);
+      e.target.value = null;
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (type === 'cv') {
+        setCvFile({ name: file.name, dataUrl: reader.result });
+      } else if (type === 'ktp') {
+        setKtpFile({ name: file.name, dataUrl: reader.result });
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   // Timer Effect
@@ -665,7 +665,7 @@ export default function Home() {
     };
     const updated = [...positionsList, newPos];
     setPositionsList(updated);
-    localStorage.setItem('tm_company_positions_v1', JSON.stringify(updated));
+    localStorage.setItem('tm_company_positions_v2', JSON.stringify(updated));
     setNewPosTitle('');
     setNewPosDept('');
     setShowAddPosModal(false);
@@ -680,7 +680,7 @@ export default function Home() {
     if (confirm(`Hapus posisi "${positionsList[idxToDelete].title}" dari daftar lowongan?`)) {
       const updated = positionsList.filter((_, idx) => idx !== idxToDelete);
       setPositionsList(updated);
-      localStorage.setItem('tm_company_positions_v1', JSON.stringify(updated));
+      localStorage.setItem('tm_company_positions_v2', JSON.stringify(updated));
     }
   };
 
@@ -714,11 +714,13 @@ export default function Home() {
     downloadAnchor.remove();
   };
 
-  // Mulai Tes Dinamis Sesuai Posisi di Organigram
+  // Mulai Tes Dinamis
   const handleStartTest = (e) => {
     e.preventDefault();
     const applicant = {
       ...form,
+      cv: cvFile.dataUrl ? cvFile : null,
+      ktp: ktpFile.dataUrl ? ktpFile : null,
       id: 'APP-' + Math.floor(100000 + Math.random() * 900000),
       date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
     };
@@ -729,14 +731,13 @@ export default function Home() {
     const isMarketing = posLower.includes('marketing') || posLower.includes('online sales') || posLower.includes('digital');
     const isPropertySales = posLower.includes('inhouse') || posLower.includes('properti') || posLower.includes('sales supervisor');
 
-    // Seluruh posisi tetap mendapatkan: DISC (8) + MBTI (8) + IQ KOGNITIF (6)
     let questions = [...BASE_QUESTIONS];
     if (isOutlet) {
-      questions = [...questions, ...OUTLET_QUESTIONS]; // + 4 Soal Kasir & Pelayanan
+      questions = [...questions, ...OUTLET_QUESTIONS];
     } else if (isMarketing) {
-      questions = [...questions, ...MARKETING_QUESTIONS]; // + 4 Soal Metrik Ads & Copywriting
+      questions = [...questions, ...MARKETING_QUESTIONS];
     } else if (isPropertySales) {
-      questions = [...questions, ...INHOUSE_SALES_QUESTIONS]; // + 2 Soal Negosiasi & Closing Properti
+      questions = [...questions, ...INHOUSE_SALES_QUESTIONS];
     }
 
     setActiveQuestions(questions);
@@ -809,7 +810,7 @@ export default function Home() {
     };
     const mbtiMeta = mbtiDict[mbtiType] || { title: 'Reliable Professional', desc: 'Memiliki karakter bertanggung jawab, fokus, dan disiplin.' };
 
-    // 3. IQ Scoring (Wajib Semua Posisi)
+    // 3. IQ Scoring
     let iqCorrect = 0;
     activeQuestions.forEach((q, idx) => {
       if (q.module === 'iq' && answers[`q_${idx}`] === q.correct) iqCorrect++;
@@ -900,6 +901,8 @@ export default function Home() {
             dept: resultObj.dept,
             role_type: resultObj.roleType,
             test_date: resultObj.date,
+            cv_data: resultObj.cv,
+            ktp_data: resultObj.ktp,
             disc_summary: resultObj.disc,
             mbti_summary: resultObj.mbti,
             iq_summary: resultObj.iq,
@@ -961,7 +964,7 @@ export default function Home() {
     } else if (activeReport.roleType === 'marketing' && activeReport.marketing) {
       specificInfo += `\n*Skor Digital Marketing:* ${activeReport.marketing.score}% (${activeReport.marketing.cat})`;
     } else if (activeReport.roleType === 'property_sales' && activeReport.propertySales) {
-      specificInfo += `\n*Skor Sales Properti & Closing:* ${activeReport.propertySales.score}% (${activeReport.propertySales.cat})`;
+      specificInfo += `\n*Skor Sales Properti:* ${activeReport.propertySales.score}% (${activeReport.propertySales.cat})`;
     }
 
     const text = `Halo Tim HRD, saya telah menyelesaikan Tes Asesmen Online:\n\n` +
@@ -969,6 +972,7 @@ export default function Home() {
       `*ID Token:* ${activeReport.id}\n` +
       `*Posisi Dilamar:* ${activeReport.position} (${activeReport.dept})\n` +
       `*No. WA:* ${activeReport.phone}\n` +
+      `*Berkas Upload:* ${activeReport.cv ? 'CV Terlampir' : 'Tanpa CV'}, ${activeReport.ktp ? 'KTP Terlampir' : 'Tanpa KTP'}\n` +
       `*Tipe MBTI:* ${activeReport.mbti.type} (${activeReport.mbti.title})\n` +
       `*DISC Dominan:* ${activeReport.disc.dom}\n` +
       `${specificInfo}\n\n` +
@@ -978,6 +982,13 @@ export default function Home() {
 
     const waUrl = `https://api.whatsapp.com/send?phone=${wa}&text=${encodeURIComponent(text)}`;
     window.open(waUrl, '_blank');
+  };
+
+  // Helper untuk membuka file preview (Base64) di tab baru
+  const openFilePreview = (dataUrl) => {
+    if (!dataUrl) return;
+    const win = window.open();
+    win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
   };
 
   const q = activeQuestions[qIndex];
@@ -1003,7 +1014,7 @@ export default function Home() {
             </div>
             <div>
               <span className="font-extrabold text-base tracking-tight bg-gradient-to-r from-white via-slate-100 to-sky-400 bg-clip-text text-transparent">TalentMatrix AI</span>
-              <span className="text-[10px] ml-2 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">Enterprise Multi-Brand</span>
+              <span className="text-[10px] ml-2 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">Enterprise System</span>
             </div>
           </div>
 
@@ -1029,7 +1040,7 @@ export default function Home() {
       {/* Main Container */}
       <main className="max-w-4xl mx-auto w-full px-4 py-8 flex-1 flex flex-col justify-center">
 
-        {/* 1. FORM PENDAFTARAN PELAMAR */}
+        {/* 1. FORM PENDAFTARAN PELAMAR (DILENGKAPI UPLOAD CV & KTP) */}
         {view === 'applicant-form' && (
           <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-10 relative">
             <div className="max-w-xl mx-auto text-center space-y-2 mb-8">
@@ -1038,7 +1049,7 @@ export default function Home() {
                 <span>Online Recruitment Screening</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Formulir Data Diri Pelamar</h1>
-              <p className="text-xs sm:text-sm text-slate-500">Pilih posisi yang Anda lamar sesuai unit bisnis (F&B / Properti / Operasional).</p>
+              <p className="text-xs sm:text-sm text-slate-500">Lengkapi data identitas dan unggah berkas lamaran sebelum memulai tes evaluasi.</p>
             </div>
 
             <form onSubmit={handleStartTest} className="max-w-lg mx-auto space-y-4">
@@ -1079,7 +1090,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Posisi Terkunci (Sesuai Organigram Perusahaan) */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">Posisi yang Dilamar *</label>
                 <select 
@@ -1103,6 +1113,51 @@ export default function Home() {
                 </select>
               </div>
 
+              {/* FITUR BARU: UPLOAD BERKAS CV & KTP */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                {/* Upload CV */}
+                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                  <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-700">
+                    <FileText className="w-4 h-4 text-sky-600" />
+                    <span>Upload Curriculum Vitae (CV)</span>
+                  </div>
+                  <input 
+                    type="file" 
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => handleFileUpload(e, 'cv')}
+                    className="block w-full text-[11px] text-slate-500 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer"
+                  />
+                  {cvFile.name && (
+                    <div className="text-[10px] font-semibold text-emerald-600 flex items-center space-x-1 truncate">
+                      <CheckCircle className="w-3 h-3 flex-shrink-0" />
+                      <span className="truncate">{cvFile.name}</span>
+                    </div>
+                  )}
+                  <p className="text-[9px] text-slate-400">Format: PDF / DOC (Maks. 2 MB)</p>
+                </div>
+
+                {/* Upload KTP */}
+                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                  <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-700">
+                    <CreditCard className="w-4 h-4 text-emerald-600" />
+                    <span>Upload Foto KTP</span>
+                  </div>
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e, 'ktp')}
+                    className="block w-full text-[11px] text-slate-500 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
+                  />
+                  {ktpFile.name && (
+                    <div className="text-[10px] font-semibold text-emerald-600 flex items-center space-x-1 truncate">
+                      <CheckCircle className="w-3 h-3 flex-shrink-0" />
+                      <span className="truncate">{ktpFile.name}</span>
+                    </div>
+                  )}
+                  <p className="text-[9px] text-slate-400">Format: JPG / PNG (Maks. 2 MB)</p>
+                </div>
+              </div>
+
               {/* Banner Info Modul */}
               <div className="p-4 bg-sky-50 rounded-2xl border border-sky-100 text-xs text-sky-950 space-y-1.5">
                 <div className="font-bold flex items-center space-x-1.5">
@@ -1112,7 +1167,7 @@ export default function Home() {
                 <ul className="list-disc list-inside space-y-0.5 text-slate-600">
                   <li><strong>Modul 1:</strong> Gaya Kerja & Komunikasi (DISC Profile)</li>
                   <li><strong>Modul 2:</strong> Preferensi Kepribadian (MBTI Indicator)</li>
-                  <li><strong>Modul 3:</strong> Tes Kemampuan Logika & Kognitif (IQ Engine)</li>
+                  <li><strong>Modul 3:</strong> Kemampuan Logika Kognitif (IQ Engine)</li>
                   {form.position.toLowerCase().includes('outlet') || form.position.toLowerCase().includes('kebab') || form.position.toLowerCase().includes('dagos') ? (
                     <li><strong>Modul 4 Khusus Outlet:</strong> Pelayanan Hospitality CS & Aritmatika Kasir</li>
                   ) : form.position.toLowerCase().includes('marketing') || form.position.toLowerCase().includes('online sales') ? (
@@ -1339,7 +1394,7 @@ export default function Home() {
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-widest text-sky-400">STANDARDIZED TALENT ASSESSMENT REPORT</span>
                   <h1 className="text-xl sm:text-2xl font-black mt-0.5">LAPORAN HASIL ASESMEN PELAMAR</h1>
-                  <p className="text-xs text-slate-400">Evaluasi Karakter (DISC & MBTI), Skor IQ Kognitif, serta Uji Kompetensi Jabatan</p>
+                  <p className="text-xs text-slate-400">Evaluasi Karakter (DISC & MBTI), Skor IQ Kognitif, serta Berkas Lamaran</p>
                 </div>
                 <div className="px-4 py-2 rounded-xl bg-emerald-500 text-white font-extrabold text-xs text-center">
                   {activeReport.status}<br />
@@ -1353,6 +1408,21 @@ export default function Home() {
                 <div><span className="text-slate-400 block font-bold text-[10px]">Token ID:</span><strong>{activeReport.id}</strong></div>
                 <div><span className="text-slate-400 block font-bold text-[10px]">Posisi:</span><strong>{activeReport.position}</strong></div>
                 <div><span className="text-slate-400 block font-bold text-[10px]">Departemen:</span><strong>{activeReport.dept}</strong></div>
+              </div>
+
+              {/* Status Berkas Terlampir (CV & KTP) */}
+              <div className="p-3 bg-sky-50/70 border border-sky-200 rounded-xl flex items-center justify-between text-xs">
+                <span className="font-bold text-sky-900">Kelengkapan Berkas Pelamar:</span>
+                <div className="flex items-center space-x-3">
+                  <span className={`flex items-center space-x-1 font-semibold ${activeReport.cv ? 'text-emerald-700' : 'text-slate-400'}`}>
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>{activeReport.cv ? 'CV Terlampir' : 'Tanpa CV'}</span>
+                  </span>
+                  <span className={`flex items-center space-x-1 font-semibold ${activeReport.ktp ? 'text-emerald-700' : 'text-slate-400'}`}>
+                    <CreditCard className="w-3.5 h-3.5" />
+                    <span>{activeReport.ktp ? 'KTP Terlampir' : 'Tanpa KTP'}</span>
+                  </span>
+                </div>
               </div>
 
               {/* Charts & Breakdown */}
@@ -1493,7 +1563,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* 5. PORTAL HRD PERSISTEN */}
+        {/* 5. PORTAL HRD PERSISTEN (DENGAN AKSES DOWNLOAD/PREVIEW CV & KTP) */}
         {view === 'hr-dashboard' && isHrAuthenticated && (
           <div className="space-y-6">
             <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
@@ -1510,7 +1580,7 @@ export default function Home() {
                       <span className="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[10px] font-bold">LocalStorage Mode</span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500">Seluruh data pelamar dan skor IQ tersimpan permanen di database.</p>
+                  <p className="text-xs text-slate-500">Seluruh data pelamar, skor tes, serta berkas CV & KTP tersimpan aman.</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <button onClick={() => setShowSettingsModal(true)} className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200 flex items-center space-x-1">
@@ -1576,7 +1646,7 @@ export default function Home() {
                     <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
                       Daftar Rekap Hasil Seluruh Pelamar ({filteredApplicants.length} Data)
                     </h3>
-                    <p className="text-[11px] text-slate-400">Seluruh data hasil tes termasuk skor IQ tersimpan rapi di sini.</p>
+                    <p className="text-[11px] text-slate-400">Seluruh data hasil tes, skor IQ, serta lampiran berkas pelamar.</p>
                   </div>
                   <div className="relative w-full sm:w-64">
                     <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" />
@@ -1594,12 +1664,12 @@ export default function Home() {
                   <table className="w-full text-left text-xs">
                     <thead className="bg-slate-50 text-slate-400 uppercase font-bold text-[10px]">
                       <tr>
-                        <th className="p-3">Pelamar</th>
+                        <th className="p-3">Pelamar & Kontak</th>
                         <th className="p-3">Posisi Dilamar</th>
+                        <th className="p-3 text-center">Berkas Lampiran</th>
                         <th className="p-3 text-center">MBTI</th>
                         <th className="p-3 text-center">DISC</th>
                         <th className="p-3 text-center">Skor IQ</th>
-                        <th className="p-3 text-center">Uji Bidang</th>
                         <th className="p-3 text-center">Fit Score</th>
                         <th className="p-3 text-right">Aksi</th>
                       </tr>
@@ -1616,41 +1686,47 @@ export default function Home() {
                           <tr key={c.id} className="hover:bg-slate-50">
                             <td className="p-3 font-bold">
                               <div>{c.name}</div>
-                              <div className="text-[10px] text-slate-400 font-normal">{c.email} • {c.id}</div>
+                              <div className="text-[10px] text-slate-400 font-normal">{c.email} • {c.phone}</div>
                             </td>
                             <td className="p-3">
                               <div className="font-semibold text-slate-700">{c.position}</div>
                               <div className="text-[10px] text-slate-400">{c.date}</div>
                             </td>
+                            
+                            {/* Tombol Akses Berkas CV & KTP */}
+                            <td className="p-3 text-center space-x-1">
+                              {c.cv?.dataUrl ? (
+                                <button 
+                                  onClick={() => openFilePreview(c.cv.dataUrl)}
+                                  className="px-2 py-0.5 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded text-[10px] font-bold border border-sky-200 inline-flex items-center space-x-0.5"
+                                  title={`Buka CV: ${c.cv.name}`}
+                                >
+                                  <FileText className="w-2.5 h-2.5 mr-0.5" />
+                                  <span>CV</span>
+                                </button>
+                              ) : (
+                                <span className="text-[10px] text-slate-300">-</span>
+                              )}
+
+                              {c.ktp?.dataUrl ? (
+                                <button 
+                                  onClick={() => openFilePreview(c.ktp.dataUrl)}
+                                  className="px-2 py-0.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded text-[10px] font-bold border border-emerald-200 inline-flex items-center space-x-0.5"
+                                  title={`Buka KTP: ${c.ktp.name}`}
+                                >
+                                  <CreditCard className="w-2.5 h-2.5 mr-0.5" />
+                                  <span>KTP</span>
+                                </button>
+                              ) : (
+                                <span className="text-[10px] text-slate-300">-</span>
+                              )}
+                            </td>
+
                             <td className="p-3 text-center font-bold text-purple-700">{c.mbti.type}</td>
                             <td className="p-3 text-center font-bold">{c.disc.dom.split(' ')[0]}</td>
                             <td className="p-3 text-center">
                               <span className="font-mono font-bold text-sky-600">{c.iq?.score || 115}</span>
                               <div className="text-[9px] text-slate-400">{c.iq?.cat || 'Rata-rata'}</div>
-                            </td>
-                            <td className="p-3 text-center">
-                              {c.roleType === 'outlet' && c.outletScore ? (
-                                <div className="space-y-0.5">
-                                  <span className="inline-block px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[9px] mr-1">
-                                    CS: {c.outletScore.serviceScore}%
-                                  </span>
-                                  <span className="inline-block px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 font-bold text-[9px]">
-                                    Kasir: {c.outletScore.cashierScore}%
-                                  </span>
-                                </div>
-                              ) : c.roleType === 'marketing' && c.marketing ? (
-                                <span className="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold text-[10px]">
-                                  DM: {c.marketing.score}%
-                                </span>
-                              ) : c.roleType === 'property_sales' && c.propertySales ? (
-                                <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[10px]">
-                                  Sales: {c.propertySales.score}%
-                                </span>
-                              ) : (
-                                <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold text-[10px]">
-                                  Umum
-                                </span>
-                              )}
                             </td>
                             <td className="p-3 text-center">
                               <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800">
