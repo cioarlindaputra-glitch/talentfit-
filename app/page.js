@@ -441,6 +441,7 @@ const INHOUSE_SALES_QUESTIONS = [
 ];
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
   const [view, setView] = useState('applicant-form');
   const [db, setDb] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -500,23 +501,28 @@ export default function Home() {
   const [timeLeft, setTimeLeft] = useState(1200);
   const [activeReport, setActiveReport] = useState(null);
 
-  // Load Saved Database
+  // Mencegah Hydration Mismatch & Load Database Aman
   useEffect(() => {
-    const savedPin = localStorage.getItem('tm_hr_pin');
-    const savedPos = localStorage.getItem('tm_company_positions_v3');
-    const savedWa = localStorage.getItem('tm_hr_wa');
-    const savedUrl = localStorage.getItem('tm_supabase_url');
-    const savedKey = localStorage.getItem('tm_supabase_key');
-    
-    if (savedPin) setHrPinCode(savedPin);
-    if (savedWa) setHrWaNumber(savedWa);
-    if (savedUrl) setSupabaseUrl(savedUrl);
-    if (savedKey) setSupabaseKey(savedKey);
-    if (savedPos) {
-      try { setPositionsList(JSON.parse(savedPos)); } catch (e) {}
-    }
+    setMounted(true);
+    try {
+      const savedPin = localStorage.getItem('tm_hr_pin');
+      const savedPos = localStorage.getItem('tm_company_positions_v3');
+      const savedWa = localStorage.getItem('tm_hr_wa');
+      const savedUrl = localStorage.getItem('tm_supabase_url');
+      const savedKey = localStorage.getItem('tm_supabase_key');
+      
+      if (savedPin) setHrPinCode(savedPin);
+      if (savedWa) setHrWaNumber(savedWa);
+      if (savedUrl) setSupabaseUrl(savedUrl);
+      if (savedKey) setSupabaseKey(savedKey);
+      if (savedPos) {
+        try { setPositionsList(JSON.parse(savedPos)); } catch (e) {}
+      }
 
-    fetchApplicants(savedUrl, savedKey);
+      fetchApplicants(savedUrl, savedKey);
+    } catch (e) {
+      console.warn('LocalStorage error:', e);
+    }
   }, []);
 
   const fetchApplicants = async (sUrl, sKey) => {
@@ -562,10 +568,12 @@ export default function Home() {
       } catch (err) {}
     }
 
-    const savedDb = localStorage.getItem('talentmatrix_persistent_db');
-    if (savedDb) {
-      try { setDb(JSON.parse(savedDb)); } catch (e) {}
-    }
+    try {
+      const savedDb = localStorage.getItem('talentmatrix_persistent_db');
+      if (savedDb) {
+        setDb(JSON.parse(savedDb));
+      }
+    } catch (e) {}
   };
 
   // Convert File ke Base64 Data URL (CV, KTP, SKCK, NPWP)
@@ -923,14 +931,16 @@ export default function Home() {
     }
 
     // Simpan ke LocalStorage Persisten
-    const existingRaw = localStorage.getItem('talentmatrix_persistent_db');
-    let existingList = [];
-    if (existingRaw) {
-      try { existingList = JSON.parse(existingRaw); } catch (e) {}
-    }
-    const updatedList = [resultObj, ...existingList];
-    setDb(updatedList);
-    localStorage.setItem('talentmatrix_persistent_db', JSON.stringify(updatedList));
+    try {
+      const existingRaw = localStorage.getItem('talentmatrix_persistent_db');
+      let existingList = [];
+      if (existingRaw) {
+        existingList = JSON.parse(existingRaw);
+      }
+      const updatedList = [resultObj, ...existingList];
+      setDb(updatedList);
+      localStorage.setItem('talentmatrix_persistent_db', JSON.stringify(updatedList));
+    } catch (e) {}
 
     setActiveReport(resultObj);
     setView('report');
@@ -973,7 +983,6 @@ export default function Home() {
       specificInfo += `\n*Skor Sales Properti:* ${activeReport.propertySales.score}% (${activeReport.propertySales.cat})`;
     }
 
-    // Status berkas yang dilampirkan
     const docs = [];
     if (activeReport.cv) docs.push('CV');
     if (activeReport.ktp) docs.push('KTP');
@@ -1003,15 +1012,24 @@ export default function Home() {
     win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
   };
 
+  // Jangan render sampai browser siap (mencegah error client-side exception)
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white text-xs font-semibold">
+        Memuat Sistem Asesmen...
+      </div>
+    );
+  }
+
   const q = activeQuestions[qIndex];
 
   const filteredApplicants = db.filter(item => {
     const qLower = searchQuery.toLowerCase();
     return (
-      item.name.toLowerCase().includes(qLower) ||
-      item.position.toLowerCase().includes(qLower) ||
-      item.id.toLowerCase().includes(qLower) ||
-      item.email.toLowerCase().includes(qLower)
+      item.name?.toLowerCase().includes(qLower) ||
+      item.position?.toLowerCase().includes(qLower) ||
+      item.id?.toLowerCase().includes(qLower) ||
+      item.email?.toLowerCase().includes(qLower)
     );
   });
 
@@ -1052,7 +1070,7 @@ export default function Home() {
       {/* Main Container */}
       <main className="max-w-4xl mx-auto w-full px-4 py-8 flex-1 flex flex-col justify-center">
 
-        {/* 1. FORM PENDAFTARAN PELAMAR (DILENGKAPI CV, KTP, SKCK, NPWP) */}
+        {/* 1. FORM PENDAFTARAN PELAMAR */}
         {view === 'applicant-form' && (
           <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-10 relative">
             <div className="max-w-xl mx-auto text-center space-y-2 mb-8">
@@ -1125,7 +1143,7 @@ export default function Home() {
                 </select>
               </div>
 
-              {/* SEKSI UPLOAD DOKUMEN: CV, KTP, SKCK & NPWP */}
+              {/* UPLOAD BERKAS CV, KTP, SKCK, NPWP */}
               <div className="pt-2">
                 <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wider mb-2">Berkas Lamaran & Identitas Diri:</label>
                 
@@ -1632,7 +1650,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* 5. PORTAL HRD PERSISTEN (DENGAN AKSES CV, KTP, SKCK & NPWP) */}
+        {/* 5. PORTAL HRD PERSISTEN */}
         {view === 'hr-dashboard' && isHrAuthenticated && (
           <div className="space-y-6">
             <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
@@ -1649,7 +1667,7 @@ export default function Home() {
                       <span className="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[10px] font-bold">LocalStorage Mode</span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500">Seluruh data pelamar, skor tes, serta kelengkapan berkas tersimpan aman.</p>
+                  <p className="text-xs text-slate-500">Seluruh data pelamar, skor tes, serta berkas CV, KTP, SKCK, dan NPWP tersimpan aman.</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <button onClick={() => setShowSettingsModal(true)} className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200 flex items-center space-x-1">
