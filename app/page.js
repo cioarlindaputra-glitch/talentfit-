@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Award, Brain, CheckCircle, Clock, Download, Plus, 
   Printer, ShieldCheck, Sparkles, UserPlus, ArrowRight, Info, Briefcase,
-  Lock, KeyRound, LogOut, Eye, EyeOff, Calculator, Megaphone, Trash2, HeartHandshake, Search, FileDown, Building2, Upload, FileText, CreditCard, ExternalLink
+  Lock, KeyRound, LogOut, Eye, EyeOff, Calculator, Megaphone, Trash2, HeartHandshake, Search, FileDown, Building2, FileText, CreditCard, ShieldAlert, FileCheck
 } from 'lucide-react';
 import {
   Chart as ChartJS,
@@ -479,7 +479,7 @@ export default function Home() {
   const [newPosTitle, setNewPosTitle] = useState('');
   const [newPosDept, setNewPosDept] = useState('');
 
-  // Form Pelamar & File Upload State
+  // Form Pelamar & File Upload State (CV, KTP, SKCK, NPWP)
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -490,6 +490,8 @@ export default function Home() {
 
   const [cvFile, setCvFile] = useState({ name: '', dataUrl: '' });
   const [ktpFile, setKtpFile] = useState({ name: '', dataUrl: '' });
+  const [skckFile, setSkckFile] = useState({ name: '', dataUrl: '' });
+  const [npwpFile, setNpwpFile] = useState({ name: '', dataUrl: '' });
 
   const [currentApplicant, setCurrentApplicant] = useState(null);
   const [activeQuestions, setActiveQuestions] = useState([]);
@@ -501,7 +503,7 @@ export default function Home() {
   // Load Saved Database
   useEffect(() => {
     const savedPin = localStorage.getItem('tm_hr_pin');
-    const savedPos = localStorage.getItem('tm_company_positions_v2');
+    const savedPos = localStorage.getItem('tm_company_positions_v3');
     const savedWa = localStorage.getItem('tm_hr_wa');
     const savedUrl = localStorage.getItem('tm_supabase_url');
     const savedKey = localStorage.getItem('tm_supabase_key');
@@ -542,6 +544,8 @@ export default function Home() {
             date: item.test_date,
             cv: item.cv_data || null,
             ktp: item.ktp_data || null,
+            skck: item.skck_data || null,
+            npwp: item.npwp_data || null,
             disc: item.disc_summary,
             mbti: item.mbti_summary,
             iq: item.iq_summary,
@@ -564,12 +568,11 @@ export default function Home() {
     }
   };
 
-  // Convert File ke Base64 Data URL
+  // Convert File ke Base64 Data URL (CV, KTP, SKCK, NPWP)
   const handleFileUpload = (e, type) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Batas file 2MB
     if (file.size > 2 * 1024 * 1024) {
       alert(`Ukuran berkas ${file.name} melebihi 2 MB. Harap gunakan berkas di bawah 2 MB!`);
       e.target.value = null;
@@ -578,11 +581,10 @@ export default function Home() {
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      if (type === 'cv') {
-        setCvFile({ name: file.name, dataUrl: reader.result });
-      } else if (type === 'ktp') {
-        setKtpFile({ name: file.name, dataUrl: reader.result });
-      }
+      if (type === 'cv') setCvFile({ name: file.name, dataUrl: reader.result });
+      else if (type === 'ktp') setKtpFile({ name: file.name, dataUrl: reader.result });
+      else if (type === 'skck') setSkckFile({ name: file.name, dataUrl: reader.result });
+      else if (type === 'npwp') setNpwpFile({ name: file.name, dataUrl: reader.result });
     };
     reader.readAsDataURL(file);
   };
@@ -665,7 +667,7 @@ export default function Home() {
     };
     const updated = [...positionsList, newPos];
     setPositionsList(updated);
-    localStorage.setItem('tm_company_positions_v2', JSON.stringify(updated));
+    localStorage.setItem('tm_company_positions_v3', JSON.stringify(updated));
     setNewPosTitle('');
     setNewPosDept('');
     setShowAddPosModal(false);
@@ -680,7 +682,7 @@ export default function Home() {
     if (confirm(`Hapus posisi "${positionsList[idxToDelete].title}" dari daftar lowongan?`)) {
       const updated = positionsList.filter((_, idx) => idx !== idxToDelete);
       setPositionsList(updated);
-      localStorage.setItem('tm_company_positions_v2', JSON.stringify(updated));
+      localStorage.setItem('tm_company_positions_v3', JSON.stringify(updated));
     }
   };
 
@@ -721,6 +723,8 @@ export default function Home() {
       ...form,
       cv: cvFile.dataUrl ? cvFile : null,
       ktp: ktpFile.dataUrl ? ktpFile : null,
+      skck: skckFile.dataUrl ? skckFile : null,
+      npwp: npwpFile.dataUrl ? npwpFile : null,
       id: 'APP-' + Math.floor(100000 + Math.random() * 900000),
       date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
     };
@@ -903,6 +907,8 @@ export default function Home() {
             test_date: resultObj.date,
             cv_data: resultObj.cv,
             ktp_data: resultObj.ktp,
+            skck_data: resultObj.skck,
+            npwp_data: resultObj.npwp,
             disc_summary: resultObj.disc,
             mbti_summary: resultObj.mbti,
             iq_summary: resultObj.iq,
@@ -967,12 +973,19 @@ export default function Home() {
       specificInfo += `\n*Skor Sales Properti:* ${activeReport.propertySales.score}% (${activeReport.propertySales.cat})`;
     }
 
+    // Status berkas yang dilampirkan
+    const docs = [];
+    if (activeReport.cv) docs.push('CV');
+    if (activeReport.ktp) docs.push('KTP');
+    if (activeReport.skck) docs.push('SKCK');
+    if (activeReport.npwp) docs.push('NPWP');
+
     const text = `Halo Tim HRD, saya telah menyelesaikan Tes Asesmen Online:\n\n` +
       `*Nama Pelamar:* ${activeReport.name}\n` +
       `*ID Token:* ${activeReport.id}\n` +
       `*Posisi Dilamar:* ${activeReport.position} (${activeReport.dept})\n` +
       `*No. WA:* ${activeReport.phone}\n` +
-      `*Berkas Upload:* ${activeReport.cv ? 'CV Terlampir' : 'Tanpa CV'}, ${activeReport.ktp ? 'KTP Terlampir' : 'Tanpa KTP'}\n` +
+      `*Berkas Upload:* ${docs.length > 0 ? docs.join(', ') : 'Belum Melampirkan'}\n` +
       `*Tipe MBTI:* ${activeReport.mbti.type} (${activeReport.mbti.title})\n` +
       `*DISC Dominan:* ${activeReport.disc.dom}\n` +
       `${specificInfo}\n\n` +
@@ -984,7 +997,6 @@ export default function Home() {
     window.open(waUrl, '_blank');
   };
 
-  // Helper untuk membuka file preview (Base64) di tab baru
   const openFilePreview = (dataUrl) => {
     if (!dataUrl) return;
     const win = window.open();
@@ -1014,7 +1026,7 @@ export default function Home() {
             </div>
             <div>
               <span className="font-extrabold text-base tracking-tight bg-gradient-to-r from-white via-slate-100 to-sky-400 bg-clip-text text-transparent">TalentMatrix AI</span>
-              <span className="text-[10px] ml-2 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">Enterprise System</span>
+              <span className="text-[10px] ml-2 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">Enterprise Multi-Brand</span>
             </div>
           </div>
 
@@ -1040,7 +1052,7 @@ export default function Home() {
       {/* Main Container */}
       <main className="max-w-4xl mx-auto w-full px-4 py-8 flex-1 flex flex-col justify-center">
 
-        {/* 1. FORM PENDAFTARAN PELAMAR (DILENGKAPI UPLOAD CV & KTP) */}
+        {/* 1. FORM PENDAFTARAN PELAMAR (DILENGKAPI CV, KTP, SKCK, NPWP) */}
         {view === 'applicant-form' && (
           <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-10 relative">
             <div className="max-w-xl mx-auto text-center space-y-2 mb-8">
@@ -1049,7 +1061,7 @@ export default function Home() {
                 <span>Online Recruitment Screening</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Formulir Data Diri Pelamar</h1>
-              <p className="text-xs sm:text-sm text-slate-500">Lengkapi data identitas dan unggah berkas lamaran sebelum memulai tes evaluasi.</p>
+              <p className="text-xs sm:text-sm text-slate-500">Lengkapi data identitas dan unggah berkas kelengkapan (CV, KTP, SKCK & NPWP) sebelum memulai tes evaluasi.</p>
             </div>
 
             <form onSubmit={handleStartTest} className="max-w-lg mx-auto space-y-4">
@@ -1113,49 +1125,98 @@ export default function Home() {
                 </select>
               </div>
 
-              {/* FITUR BARU: UPLOAD BERKAS CV & KTP */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                {/* Upload CV */}
-                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
-                  <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-700">
-                    <FileText className="w-4 h-4 text-sky-600" />
-                    <span>Upload Curriculum Vitae (CV)</span>
-                  </div>
-                  <input 
-                    type="file" 
-                    accept=".pdf,.doc,.docx"
-                    onChange={(e) => handleFileUpload(e, 'cv')}
-                    className="block w-full text-[11px] text-slate-500 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer"
-                  />
-                  {cvFile.name && (
-                    <div className="text-[10px] font-semibold text-emerald-600 flex items-center space-x-1 truncate">
-                      <CheckCircle className="w-3 h-3 flex-shrink-0" />
-                      <span className="truncate">{cvFile.name}</span>
+              {/* SEKSI UPLOAD DOKUMEN: CV, KTP, SKCK & NPWP */}
+              <div className="pt-2">
+                <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wider mb-2">Berkas Lamaran & Identitas Diri:</label>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Upload CV */}
+                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5">
+                    <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-700">
+                      <FileText className="w-3.5 h-3.5 text-sky-600" />
+                      <span>Curriculum Vitae (CV) *</span>
                     </div>
-                  )}
-                  <p className="text-[9px] text-slate-400">Format: PDF / DOC (Maks. 2 MB)</p>
-                </div>
+                    <input 
+                      type="file" 
+                      required
+                      accept=".pdf,.doc,.docx"
+                      onChange={(e) => handleFileUpload(e, 'cv')}
+                      className="block w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer"
+                    />
+                    {cvFile.name && (
+                      <div className="text-[10px] font-semibold text-emerald-600 flex items-center space-x-1 truncate">
+                        <CheckCircle className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">{cvFile.name}</span>
+                      </div>
+                    )}
+                  </div>
 
-                {/* Upload KTP */}
-                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
-                  <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-700">
-                    <CreditCard className="w-4 h-4 text-emerald-600" />
-                    <span>Upload Foto KTP</span>
-                  </div>
-                  <input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={(e) => handleFileUpload(e, 'ktp')}
-                    className="block w-full text-[11px] text-slate-500 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
-                  />
-                  {ktpFile.name && (
-                    <div className="text-[10px] font-semibold text-emerald-600 flex items-center space-x-1 truncate">
-                      <CheckCircle className="w-3 h-3 flex-shrink-0" />
-                      <span className="truncate">{ktpFile.name}</span>
+                  {/* Upload KTP */}
+                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5">
+                    <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-700">
+                      <CreditCard className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Foto KTP Asli *</span>
                     </div>
-                  )}
-                  <p className="text-[9px] text-slate-400">Format: JPG / PNG (Maks. 2 MB)</p>
+                    <input 
+                      type="file" 
+                      required
+                      accept="image/*"
+                      onChange={(e) => handleFileUpload(e, 'ktp')}
+                      className="block w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
+                    />
+                    {ktpFile.name && (
+                      <div className="text-[10px] font-semibold text-emerald-600 flex items-center space-x-1 truncate">
+                        <CheckCircle className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">{ktpFile.name}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Upload SKCK */}
+                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5">
+                    <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-700">
+                      <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Berkas SKCK Aktif *</span>
+                    </div>
+                    <input 
+                      type="file" 
+                      required
+                      accept="image/*,.pdf"
+                      onChange={(e) => handleFileUpload(e, 'skck')}
+                      className="block w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 cursor-pointer"
+                    />
+                    {skckFile.name && (
+                      <div className="text-[10px] font-semibold text-emerald-600 flex items-center space-x-1 truncate">
+                        <CheckCircle className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">{skckFile.name}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Upload NPWP (Opsional) */}
+                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-700">
+                        <FileCheck className="w-3.5 h-3.5 text-purple-600" />
+                        <span>Foto NPWP</span>
+                      </div>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase bg-slate-200/60 px-1.5 py-0.5 rounded">Opsional</span>
+                    </div>
+                    <input 
+                      type="file" 
+                      accept="image/*,.pdf"
+                      onChange={(e) => handleFileUpload(e, 'npwp')}
+                      className="block w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
+                    />
+                    {npwpFile.name && (
+                      <div className="text-[10px] font-semibold text-emerald-600 flex items-center space-x-1 truncate">
+                        <CheckCircle className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">{npwpFile.name}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
+                <p className="text-[10px] text-slate-400 mt-1.5">* Format berkas: PDF / JPG / PNG (Maksimal 2 MB per berkas).</p>
               </div>
 
               {/* Banner Info Modul */}
@@ -1410,17 +1471,25 @@ export default function Home() {
                 <div><span className="text-slate-400 block font-bold text-[10px]">Departemen:</span><strong>{activeReport.dept}</strong></div>
               </div>
 
-              {/* Status Berkas Terlampir (CV & KTP) */}
-              <div className="p-3 bg-sky-50/70 border border-sky-200 rounded-xl flex items-center justify-between text-xs">
-                <span className="font-bold text-sky-900">Kelengkapan Berkas Pelamar:</span>
-                <div className="flex items-center space-x-3">
+              {/* Status Berkas Terlampir (CV, KTP, SKCK, NPWP) */}
+              <div className="p-3 bg-sky-50/70 border border-sky-200 rounded-xl text-xs space-y-1">
+                <span className="font-bold text-sky-900 block mb-1">Status Berkas Terlampir Pelamar:</span>
+                <div className="flex flex-wrap items-center gap-3">
                   <span className={`flex items-center space-x-1 font-semibold ${activeReport.cv ? 'text-emerald-700' : 'text-slate-400'}`}>
                     <FileText className="w-3.5 h-3.5" />
-                    <span>{activeReport.cv ? 'CV Terlampir' : 'Tanpa CV'}</span>
+                    <span>{activeReport.cv ? 'CV Ada' : 'Tanpa CV'}</span>
                   </span>
                   <span className={`flex items-center space-x-1 font-semibold ${activeReport.ktp ? 'text-emerald-700' : 'text-slate-400'}`}>
                     <CreditCard className="w-3.5 h-3.5" />
-                    <span>{activeReport.ktp ? 'KTP Terlampir' : 'Tanpa KTP'}</span>
+                    <span>{activeReport.ktp ? 'KTP Ada' : 'Tanpa KTP'}</span>
+                  </span>
+                  <span className={`flex items-center space-x-1 font-semibold ${activeReport.skck ? 'text-emerald-700' : 'text-slate-400'}`}>
+                    <ShieldAlert className="w-3.5 h-3.5" />
+                    <span>{activeReport.skck ? 'SKCK Ada' : 'Tanpa SKCK'}</span>
+                  </span>
+                  <span className={`flex items-center space-x-1 font-semibold ${activeReport.npwp ? 'text-emerald-700' : 'text-slate-400'}`}>
+                    <FileCheck className="w-3.5 h-3.5" />
+                    <span>{activeReport.npwp ? 'NPWP Ada' : 'Tanpa NPWP'}</span>
                   </span>
                 </div>
               </div>
@@ -1563,7 +1632,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* 5. PORTAL HRD PERSISTEN (DENGAN AKSES DOWNLOAD/PREVIEW CV & KTP) */}
+        {/* 5. PORTAL HRD PERSISTEN (DENGAN AKSES CV, KTP, SKCK & NPWP) */}
         {view === 'hr-dashboard' && isHrAuthenticated && (
           <div className="space-y-6">
             <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
@@ -1580,7 +1649,7 @@ export default function Home() {
                       <span className="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[10px] font-bold">LocalStorage Mode</span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500">Seluruh data pelamar, skor tes, serta berkas CV & KTP tersimpan aman.</p>
+                  <p className="text-xs text-slate-500">Seluruh data pelamar, skor tes, serta kelengkapan berkas tersimpan aman.</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <button onClick={() => setShowSettingsModal(true)} className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200 flex items-center space-x-1">
@@ -1646,7 +1715,7 @@ export default function Home() {
                     <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
                       Daftar Rekap Hasil Seluruh Pelamar ({filteredApplicants.length} Data)
                     </h3>
-                    <p className="text-[11px] text-slate-400">Seluruh data hasil tes, skor IQ, serta lampiran berkas pelamar.</p>
+                    <p className="text-[11px] text-slate-400">Seluruh data hasil tes, skor IQ, serta kelengkapan berkas pelamar.</p>
                   </div>
                   <div className="relative w-full sm:w-64">
                     <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" />
@@ -1693,33 +1762,55 @@ export default function Home() {
                               <div className="text-[10px] text-slate-400">{c.date}</div>
                             </td>
                             
-                            {/* Tombol Akses Berkas CV & KTP */}
-                            <td className="p-3 text-center space-x-1">
-                              {c.cv?.dataUrl ? (
-                                <button 
-                                  onClick={() => openFilePreview(c.cv.dataUrl)}
-                                  className="px-2 py-0.5 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded text-[10px] font-bold border border-sky-200 inline-flex items-center space-x-0.5"
-                                  title={`Buka CV: ${c.cv.name}`}
-                                >
-                                  <FileText className="w-2.5 h-2.5 mr-0.5" />
-                                  <span>CV</span>
-                                </button>
-                              ) : (
-                                <span className="text-[10px] text-slate-300">-</span>
-                              )}
+                            {/* Tombol Akses Berkas CV, KTP, SKCK & NPWP */}
+                            <td className="p-3 text-center">
+                              <div className="flex items-center justify-center space-x-1">
+                                {c.cv?.dataUrl ? (
+                                  <button 
+                                    onClick={() => openFilePreview(c.cv.dataUrl)}
+                                    className="px-1.5 py-0.5 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded text-[9px] font-bold border border-sky-200 inline-flex items-center"
+                                    title={`Buka CV: ${c.cv.name}`}
+                                  >
+                                    CV
+                                  </button>
+                                ) : (
+                                  <span className="text-[9px] text-slate-300">-</span>
+                                )}
 
-                              {c.ktp?.dataUrl ? (
-                                <button 
-                                  onClick={() => openFilePreview(c.ktp.dataUrl)}
-                                  className="px-2 py-0.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded text-[10px] font-bold border border-emerald-200 inline-flex items-center space-x-0.5"
-                                  title={`Buka KTP: ${c.ktp.name}`}
-                                >
-                                  <CreditCard className="w-2.5 h-2.5 mr-0.5" />
-                                  <span>KTP</span>
-                                </button>
-                              ) : (
-                                <span className="text-[10px] text-slate-300">-</span>
-                              )}
+                                {c.ktp?.dataUrl ? (
+                                  <button 
+                                    onClick={() => openFilePreview(c.ktp.dataUrl)}
+                                    className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded text-[9px] font-bold border border-emerald-200 inline-flex items-center"
+                                    title={`Buka KTP: ${c.ktp.name}`}
+                                  >
+                                    KTP
+                                  </button>
+                                ) : (
+                                  <span className="text-[9px] text-slate-300">-</span>
+                                )}
+
+                                {c.skck?.dataUrl ? (
+                                  <button 
+                                    onClick={() => openFilePreview(c.skck.dataUrl)}
+                                    className="px-1.5 py-0.5 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded text-[9px] font-bold border border-amber-200 inline-flex items-center"
+                                    title={`Buka SKCK: ${c.skck.name}`}
+                                  >
+                                    SKCK
+                                  </button>
+                                ) : (
+                                  <span className="text-[9px] text-slate-300">-</span>
+                                )}
+
+                                {c.npwp?.dataUrl ? (
+                                  <button 
+                                    onClick={() => openFilePreview(c.npwp.dataUrl)}
+                                    className="px-1.5 py-0.5 bg-purple-50 text-purple-700 hover:bg-purple-100 rounded text-[9px] font-bold border border-purple-200 inline-flex items-center"
+                                    title={`Buka NPWP: ${c.npwp.name}`}
+                                  >
+                                    NPWP
+                                  </button>
+                                ) : null}
+                              </div>
                             </td>
 
                             <td className="p-3 text-center font-bold text-purple-700">{c.mbti.type}</td>
