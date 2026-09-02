@@ -1,23 +1,22 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { 
   Award, Brain, CheckCircle, Clock, Download, Plus, 
   Printer, ShieldCheck, Sparkles, UserPlus, ArrowRight, Info, Briefcase,
   Lock, KeyRound, LogOut, Eye, EyeOff, Calculator, Megaphone, Trash2, HeartHandshake, Search, FileDown, Building2, FileText, CreditCard, ShieldAlert, FileCheck
 } from 'lucide-react';
-import {
-  Chart as ChartJS,
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-  Legend
-} from 'chart.js';
-import { Radar } from 'react-chartjs-2';
 
-ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
+// Dynamic import Radar Chart agar tidak bentrok dengan SSR Next.js di Vercel
+const DynamicRadar = dynamic(
+  () => import('react-chartjs-2').then((mod) => {
+    const { Chart: ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } = require('chart.js');
+    ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
+    return mod.Radar;
+  }),
+  { ssr: false, loading: () => <div className="h-44 flex items-center justify-center text-xs text-slate-400">Memuat Grafik...</div> }
+);
 
 // =========================================================================
 // 1. BANK SOAL UMUM (DISC, MBTI & IQ KOGNITIF)
@@ -1012,7 +1011,7 @@ export default function Home() {
     win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
   };
 
-  // Jangan render sampai browser siap (mencegah error client-side exception)
+  // Jangan render sebelum browser siap (mencegah error hydration)
   if (!mounted) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white text-xs font-semibold">
@@ -1521,7 +1520,7 @@ export default function Home() {
                     <span className="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[10px] font-bold">Pola: {activeReport.disc.dom.split(' ')[0]}</span>
                   </div>
                   <div className="h-44 flex items-center justify-center">
-                    <Radar 
+                    <DynamicRadar 
                       data={{
                         labels: ['D', 'I', 'S', 'C'],
                         datasets: [{
@@ -1650,7 +1649,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* 5. PORTAL HRD PERSISTEN */}
+        {/* 5. PORTAL HRD PERSISTEN (DENGAN AKSES CV, KTP, SKCK & NPWP) */}
         {view === 'hr-dashboard' && isHrAuthenticated && (
           <div className="space-y-6">
             <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
