@@ -1,5 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+
 import { 
   Award, Brain, CheckCircle, Clock, Download, Plus, 
   Printer, ShieldCheck, Sparkles, UserPlus, ArrowRight, Info, Briefcase,
