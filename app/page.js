@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import { 
   Award, Brain, CheckCircle, Clock, Download, Plus, 
   Printer, ShieldCheck, Sparkles, UserPlus, ArrowRight, Info, Briefcase,
-  Lock, KeyRound, LogOut, Eye, EyeOff, Calculator, Megaphone, Trash2, HeartHandshake, Search, FileDown, Building2, FileText, CreditCard, ShieldAlert, FileCheck
+  Lock, KeyRound, LogOut, Eye, EyeOff, Calculator, Megaphone, Trash2,
+  HeartHandshake, Search, FileDown, Building2, FileText, CreditCard,
+  ShieldAlert, FileCheck, MessageCircle, Database, Settings
 } from 'lucide-react';
 
 // Dynamic import Radar Chart agar tidak bentrok dengan SSR Next.js di Vercel
